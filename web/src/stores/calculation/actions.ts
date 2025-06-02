@@ -10,6 +10,7 @@ export const calculationStoreActions: CalculationStoreActions = {
       const calculator = await getCalculatorService().getCalculator(companyId, calculatorId);
 
       this.steps = prepareSteps(calculator.steps, calculator.optionList);
+      this.subSteps = calculator.subSteps;
       this.currentStepId = this.firstStep?.id || null;
       this.status = 'ready';
     } catch (error) {
@@ -19,10 +20,28 @@ export const calculationStoreActions: CalculationStoreActions = {
     }
   },
   goToNextStep(this: CalculationStore) {
+    const currentAnswer = this.answers[this.currentStepId!];
+    if (!currentAnswer) {
+      return;
+    }
+
+    const subStep = this.subStepForAnswer(this.currentStepId!, currentAnswer);
+    if (!this.currentSubStep && subStep) {
+      this.currentSubStepId = subStep.id;
+      return;
+    }
+
+    this.currentSubStepId = null;
     this.currentStepId = getNextStepId(this.currentStep);
   },
   goToPrevStep(this: CalculationStore) {
     if (!this.currentStepId) {
+      return;
+    }
+
+    if (this.currentSubStepId) {
+      this.setAnswer(this.currentSubStepId, null);
+      this.currentSubStepId = null;
       return;
     }
 

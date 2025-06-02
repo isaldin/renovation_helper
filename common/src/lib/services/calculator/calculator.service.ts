@@ -6,6 +6,7 @@ import { CalculatorSettingsService } from './calculatorSettings.service';
 import { CalculatorNotFoundError, CalculatorSettingsNotFoundError } from '../../errors';
 import { CalculatorStepsService } from './calculatorSteps.service';
 import { CalculatorOptionsService } from './calculatorOptionsService';
+import { CalculatorSubStepsService } from './calculatorSubSteps.service';
 
 @injectable()
 export class CalculatorService {
@@ -13,7 +14,8 @@ export class CalculatorService {
     @inject(ServiceNames.CalculatorRepository) private readonly calculatorRepository: CalculatorRepository,
     @inject(ServiceNames.CalculatorSettingsService) private readonly settingsService: CalculatorSettingsService,
     @inject(ServiceNames.CalculatorStepsService) private readonly stepsService: CalculatorStepsService,
-    @inject(ServiceNames.CalculatorOptionsService) private readonly optionsService: CalculatorOptionsService
+    @inject(ServiceNames.CalculatorOptionsService) private readonly optionsService: CalculatorOptionsService,
+    @inject(ServiceNames.CalculatorSubStepsService) private readonly subStepsService: CalculatorSubStepsService
   ) {}
 
   public async getCalculator(companyId: string, calculatorId: string): Promise<Calculator> {
@@ -29,6 +31,7 @@ export class CalculatorService {
     }
 
     const steps = await this.stepsService.getAll(companyId, calculatorId);
+    const subSteps = await this.subStepsService.getAll(companyId, calculatorId);
     const optionList = await this.optionsService.getAll(companyId, calculatorId);
 
     return {
@@ -36,6 +39,7 @@ export class CalculatorService {
       settings,
       steps,
       optionList,
+      subSteps,
     } satisfies Calculator;
   }
 }

@@ -1,4 +1,4 @@
-import { OptionList, Step, StepWithOptionsFrom } from '@/common/types';
+import { OptionList, Step, StepWithOptionsFrom, SubStepWithOptionItems } from '@/common/types';
 import { StepWithOptions } from '@app/stores/calculation/types';
 import { hasField } from '@app/utils/hasField';
 
@@ -18,6 +18,7 @@ export const prepareSteps = (steps: Step[], optionList: OptionList[]): Record<st
     acc[step.id] = {
       ...step,
       options: optionList.find((ol) => isStepWithOptionsFrom(step) && ol.id === step.optionsFrom)?.options || [],
+      subSteps: [],
     };
     return acc;
   }, {});
@@ -35,4 +36,12 @@ export const getNextStepId = (input: unknown): Step['id'] | null => {
 
 export const isStepWithOptionsFrom = (input: unknown): input is StepWithOptionsFrom => {
   return hasField<'optionsFrom', string>(input, 'optionsFrom');
+};
+
+export const isStepWithOptions = (input: unknown): input is StepWithOptions => {
+  return hasField<'options', OptionList['options']>(input, 'options');
+};
+
+export const isSubStepWithOptionItems = (input: unknown): input is SubStepWithOptionItems => {
+  return hasField<'optionItems', string[]>(input, 'optionItems');
 };

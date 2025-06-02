@@ -8,6 +8,8 @@ import { CalculatorSettingsService } from '../services/calculator/calculatorSett
 import { CalculatorService } from '../services/calculator/calculator.service';
 import { CalculatorStepsService } from '../services/calculator/calculatorSteps.service';
 import { CalculatorOptionsService } from '../services/calculator/calculatorOptionsService';
+import { CalculatorSubStepsRepository } from '../repository/calculator/calculatorSubSteps.repository';
+import { CalculatorSubStepsService } from '../services/calculator/calculatorSubSteps.service';
 
 type RegisterServicesFn = (container: DependencyContainer) => void;
 
@@ -44,5 +46,13 @@ export const registerContainer = (registerServicesFn: RegisterServicesFn) => {
   container.registerSingleton<CalculatorOptionsService>(
     ServiceNames.CalculatorOptionsService,
     CalculatorOptionsService
+  );
+  container.registerSingleton<CalculatorSubStepsRepository>(
+    ServiceNames.CalculatorSubStepsRepository,
+    CalculatorSubStepsRepository
+  );
+  container.registerSingleton<CalculatorSubStepsService>(
+    ServiceNames.CalculatorSubStepsService,
+    CalculatorSubStepsService
   );
 };

@@ -5,8 +5,9 @@ export const subSteps: SubStep[] = [
     id: 'repair_styles',
     sourceStepId: 'repair_type',
     choiceFromSource: 'repair_design',
-    type: 'checkbox',
+    type: 'select',
     title: 'Стиль ремонта',
+    defaultValue: 'repair_styles_unknown',
     optionItems: [
       {
         id: 'repair_styles_american_classic',
@@ -27,6 +28,11 @@ export const subSteps: SubStep[] = [
         id: 'repair_styles_scandi',
         title: 'Скандинавский',
         pricePerM2: 1300,
+      },
+      {
+        id: 'repair_styles_unknown',
+        title: 'Затрудняюсь ответить',
+        pricePerM2: 0,
       },
     ],
   },

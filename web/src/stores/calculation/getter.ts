@@ -1,10 +1,11 @@
 import {
+  AnswerType,
   CalculationStore,
   CalculationStoreGetters,
   CalculationStoreState,
   StepWithOptions,
 } from '@app/stores/calculation/types';
-import { Step } from '@/common/types';
+import { Step, SubStep } from '@/common/types';
 import { getFirstStep, getNextStepId } from '@app/stores/calculation/helpers';
 
 export const calculationStoreGetters: CalculationStoreGetters = {
@@ -12,6 +13,12 @@ export const calculationStoreGetters: CalculationStoreGetters = {
   currentStep: (state: CalculationStoreState) => {
     if (state.currentStepId) {
       return state.steps[state.currentStepId] || null;
+    }
+    return null;
+  },
+  currentSubStep: (state: CalculationStoreState) => {
+    if (state.currentSubStepId) {
+      return state.subSteps.find((subStep) => subStep.id === state.currentSubStepId) || null;
     }
     return null;
   },
@@ -45,4 +52,21 @@ export const calculationStoreGetters: CalculationStoreGetters = {
 
     return orderedSteps;
   },
+  subStepForAnswer:
+    (state: CalculationStoreState) =>
+    (stepId: string, answer: AnswerType): SubStep | null => {
+      return (
+        state.subSteps.find((subStep) => {
+          if (subStep.sourceStepId !== stepId) {
+            return false;
+          }
+
+          if (subStep.choiceFromSource instanceof Array) {
+            return subStep.choiceFromSource.includes(answer as string);
+          }
+
+          return subStep.choiceFromSource === answer;
+        }) || null
+      );
+    },
 };

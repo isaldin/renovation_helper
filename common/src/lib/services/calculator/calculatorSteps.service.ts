@@ -11,6 +11,6 @@ export class CalculatorStepsService {
   ) {}
 
   public getAll(companyId: string, calculatorId: string): Promise<Step[]> {
-    return this.calculatorStepsRepository.getAll(companyId, calculatorId);
+    return this.calculatorStepsRepository.getAllForCompanyAndCalculator(companyId, calculatorId);
   }
 }

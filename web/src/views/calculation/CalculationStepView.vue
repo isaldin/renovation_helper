@@ -13,7 +13,7 @@
     :key="step.id"
     class="flex-1"
     :title="step.title"
-    :options="step.options"
+    :options="getOptionItems(step)"
     :value="valueForStep as unknown as OptionItem['id'] || null"
     @answer="handleAnswer"
   />
@@ -23,7 +23,7 @@
     :key="step.id"
     class="flex-1"
     :title="step.title"
-    :options="step.options"
+    :options="getOptionItems(step)"
     :value="valueForStep as unknown as OptionItem['id'][] || null"
     @answer="handleAnswer"
   />
@@ -41,28 +41,47 @@
 <script setup lang="ts">
 import CalculationStepAreaView from '@app/views/calculation/CalculationStepAreaView.vue';
 import { useCalculationStore } from '@app/stores/calculation';
-import { computed } from 'vue';
+import { computed, toRefs } from 'vue';
 import CalculationStepSelectView from '@app/views/calculation/CalculationStepSelectView.vue';
 import CalculationStepMultipleSelectView from '@app/views/calculation/CalculationStepMultipleSelectView.vue';
-import { OptionItem } from '@/common/types';
+import { OptionItem, SubStep } from '@/common/types';
 import CalculationStepBooleanView from '@app/views/calculation/CalculationStepBooleanView.vue';
 import { AnswerType, StepWithOptions } from '@app/stores/calculation/types';
-import { isStepWithOptionsFrom } from '@app/stores/calculation/helpers';
+import { isStepWithOptions, isStepWithOptionsFrom, isSubStepWithOptionItems } from '@app/stores/calculation/helpers';
 
 const calculationStore = useCalculationStore();
 
-const { step } = defineProps<{
-  step: StepWithOptions;
+const props = defineProps<{
+  step: StepWithOptions | SubStep;
 }>();
 
-const valueForStep = computed(() => calculationStore.answers[step.id]);
+const { step } = toRefs(props);
+
+const valueForStep = computed(() => calculationStore.answers[step.value.id] || getDefaultValue(step.value));
 
 const handleAnswer = (answer: AnswerType | null) => {
-  console.log('Answer:', step.id, answer);
-  calculationStore.setAnswer(step.id, answer);
+  calculationStore.setAnswer(step.value.id, answer);
 };
 
-const isMultipleSelect = (step: StepWithOptions) => {
-  return isStepWithOptionsFrom(step) && step.multiple;
+const isMultipleSelect = (step: StepWithOptions | SubStep): boolean => {
+  return (isStepWithOptionsFrom(step) || isSubStepWithOptionItems(step)) && !!step.multiple;
+};
+
+const getDefaultValue = (step: StepWithOptions | SubStep): AnswerType | null => {
+  if (isSubStepWithOptionItems(step)) {
+    return step.defaultValue ?? null;
+  } else if (isStepWithOptionsFrom(step)) {
+    return step.defaultValue ?? null;
+  }
+  return null;
+};
+
+const getOptionItems = (step: StepWithOptions | SubStep): OptionItem[] => {
+  if (isSubStepWithOptionItems(step)) {
+    return step.optionItems;
+  } else if (isStepWithOptions(step)) {
+    return step.options;
+  }
+  return [];
 };
 </script>

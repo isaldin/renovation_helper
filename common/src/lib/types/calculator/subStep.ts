@@ -1,17 +1,21 @@
 import { OptionItem } from './options';
-import { StepType } from './steps';
+import { StepCommon, StepType } from './steps';
 
-export type SubStep = {
-  id: string;
+export type SubStep = SubStepWithOptionItems | SubStepBoolean;
+
+export type SubStepCommon = StepCommon & {
   sourceStepId: string;
-  choiceFromSource: string | string[];
-  title: string;
-} & (
-  | {
-      optionItems: OptionItem[];
-      type: Omit<StepType, 'calc' | 'boolean'>;
-    }
-  | {
-      type: 'boolean';
-    }
-);
+  choiceFromSource: string | string[] | boolean;
+};
+
+export type SubStepWithOptionItems = SubStepCommon & {
+  type: Omit<StepType, 'calc' | 'boolean'>;
+  optionItems: OptionItem[];
+  multiple?: boolean;
+  defaultValue?: string | string[];
+};
+
+export type SubStepBoolean = SubStepCommon & {
+  type: 'boolean';
+  embed?: boolean;
+};

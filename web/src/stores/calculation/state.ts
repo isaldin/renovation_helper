@@ -4,6 +4,7 @@ export const calculationStoreState = (): CalculationStoreState => ({
   status: 'loading',
   calculatorId: null,
   steps: {},
+  subSteps: [],
   answers: {},
   currentStepId: null,
 });

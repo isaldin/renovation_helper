@@ -1,13 +1,13 @@
 <template>
-  <div v-if="loading" class="flex justify-center align-middle h-screen">
+  <div v-if="loading" class="flex justify-center align-middle h-screen px-4">
     <n-spin size="large" />
   </div>
 
-  <div v-else-if="notFound" class="flex justify-center align-middle h-screen">
+  <div v-else-if="notFound" class="flex justify-center align-middle h-screen px-4">
     <n-h2>Калькулятор не найден</n-h2>
   </div>
 
-  <div v-else-if="error" class="flex justify-center align-middle h-screen flex-col">
+  <div v-else-if="error" class="flex justify-center align-middle h-screen flex-col px-4">
     <n-h2>Ошибка загрузки калькулятора</n-h2>
     <n-button type="info" @click="loadCalculator"> Попробовать заново </n-button>
   </div>
@@ -22,7 +22,7 @@
 
     <div class="calculation-view__component flex flex-1 flex-wrap justify-center">
       <div class="calculation-view__component__wrapper">
-        <calculation-step-view :step="currentStep!" />
+        <calculation-step-view :step="currentSubStep || currentStep!" />
       </div>
     </div>
 
@@ -74,6 +74,7 @@ const currentStepOrderNumber = computed(() => {
   const idx = calculationStore.stepIndexById(calculationStore.currentStepId) ?? -1;
   return idx + 1;
 });
+
 const currentAnswer = computed(() => {
   if (!currentStep.value) {
     return null;
@@ -81,6 +82,8 @@ const currentAnswer = computed(() => {
 
   return calculationStore.answers[currentStep.value.id] != null;
 });
+
+const currentSubStep = computed(() => calculationStore.currentSubStep);
 
 const loadCalculator = () => calculationStore.fetchCalculator(companyId as string, calculatorId as string);
 
