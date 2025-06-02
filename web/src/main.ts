@@ -14,27 +14,31 @@ import { RouterService } from '@app/services/routerService';
 import { TelegramWebAppService } from '@app/services/telegramWebApp.service';
 import App from '@app/views/App.vue';
 
-registerContainer((container: DependencyContainer) => {
-  container.register<FirebaseServiceConfig>(ServiceNames.WAFirebaseConfigService, {
-    useValue: firebaseServiceConfig,
+const startApp = async () => {
+  registerContainer((container: DependencyContainer) => {
+    container.register<FirebaseServiceConfig>(ServiceNames.WAFirebaseConfigService, {
+      useValue: firebaseServiceConfig,
+    });
+    container.registerSingleton(ServiceNames.FirebaseService, FirebaseService);
+    container.registerSingleton<AppInitService>(ServiceNames.WAAppInitService, AppInitService);
+    container.registerSingleton<RouterService>(ServiceNames.WARouterService, RouterService);
+    container.registerSingleton<TelegramWebAppService>(ServiceNames.WATelegramWebAppService, TelegramWebAppService);
   });
-  container.registerSingleton(ServiceNames.FirebaseService, FirebaseService);
-  container.registerSingleton<AppInitService>(ServiceNames.WAAppInitService, AppInitService);
-  container.registerSingleton<RouterService>(ServiceNames.WARouterService, RouterService);
-  container.registerSingleton<TelegramWebAppService>(ServiceNames.WATelegramWebAppService, TelegramWebAppService);
-});
 
-const appInitService = container.resolve<AppInitService>(ServiceNames.WAAppInitService);
-const routerService = container.resolve<RouterService>(ServiceNames.WARouterService);
+  const appInitService = container.resolve<AppInitService>(ServiceNames.WAAppInitService);
+  const routerService = container.resolve<RouterService>(ServiceNames.WARouterService);
 
-await appInitService.initializeApp();
+  await appInitService.initializeApp();
 
-const app = createApp(App);
+  const app = createApp(App);
 
-app.use(routerService.router);
+  app.use(routerService.router);
 
-const pinia = createPinia();
-pinia.use(piniaPersistedState);
-app.use(pinia);
+  const pinia = createPinia();
+  pinia.use(piniaPersistedState);
+  app.use(pinia);
 
-app.mount('#root');
+  app.mount('#root');
+};
+
+startApp();

@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "web:serve": "yarn nx serve web",
+    "web:build": "yarn nx build web",
+    "web:deploy": "yarn firebase deploy --only hosting",
     "tools:create-calc": "yarn ts-node scripts/calc-create.ts"
   },
   "private": true,
@@ -14,6 +16,7 @@
     "autoprefixer": "^10.4.21",
     "axios": "^1.6.0",
     "firebase": "^11.7.1",
+    "firebase-tools": "^14.5.1",
     "naive-ui": "^2.41.0",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.3.0",
