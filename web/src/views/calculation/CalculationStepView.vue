@@ -57,7 +57,7 @@ const props = defineProps<{
 
 const { step } = toRefs(props);
 
-const valueForStep = computed(() => calculationStore.answers[step.value.id] || getDefaultValue(step.value));
+const valueForStep = computed(() => calculationStore.answers[step.value.id] ?? getDefaultValue(step.value));
 
 const handleAnswer = (answer: AnswerType | null) => {
   calculationStore.setAnswer(step.value.id, answer);

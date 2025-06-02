@@ -21,7 +21,7 @@ export const calculationStoreActions: CalculationStoreActions = {
   },
   goToNextStep(this: CalculationStore) {
     const currentAnswer = this.answers[this.currentStepId!];
-    if (!currentAnswer) {
+    if (currentAnswer == null) {
       return;
     }
 
