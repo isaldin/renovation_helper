@@ -1,0 +1,71 @@
+{
+  "name": "@renovation-helper/bot",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "bot/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "bot/src/main.ts",
+          "tsConfig": "bot/tsconfig.app.json",
+          "assets": [
+            "bot/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@renovation-helper/bot:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@renovation-helper/bot:build:development"
+          },
+          "production": {
+            "buildTarget": "@renovation-helper/bot:build:production"
+          }
+        }
+      },
+      "test": {
+        "options": {
+          "passWithNoTests": true
+        }
+      }
+    }
+  }
+}

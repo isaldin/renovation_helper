@@ -1,0 +1,21 @@
+import { OptionList } from './options';
+
+export type StepType = 'select' | 'checkbox' | 'number' | 'boolean' | 'calc';
+
+type StepCommon = {
+  id: string;
+  title: string;
+};
+
+export type StepWithOptionsFrom = StepCommon & {
+  type: Omit<StepType, 'calc' | 'boolean'>;
+  optionsFrom?: OptionList['id'];
+  nextStep: StepCommon['id'];
+  multiple?: boolean;
+};
+
+type StepWithBoolean = StepCommon & { type: 'boolean'; nextStep: Step['id'] };
+
+type StepCalc = StepCommon & { type: 'calc' };
+
+export type Step = StepWithOptionsFrom | StepWithBoolean | StepCalc;

@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/common/*": ["../common/src/lib/*"]
+    }
+  },
+  "include": ["scripts/**/*.ts"]
+}
