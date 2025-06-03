@@ -1,4 +1,4 @@
-import { OptionList, Step, StepWithOptionsFrom, SubStepWithOptionItems } from '@/common/types';
+import { OptionList, Step, StepWithOptionsFrom, SubStep, SubStepBoolean, SubStepWithOptionItems } from '@/common/types';
 import { StepWithOptions } from '@app/stores/calculation/types';
 import { hasField } from '@app/utils/hasField';
 
@@ -44,4 +44,8 @@ export const isStepWithOptions = (input: unknown): input is StepWithOptions => {
 
 export const isSubStepWithOptionItems = (input: unknown): input is SubStepWithOptionItems => {
   return hasField<'optionItems', string[]>(input, 'optionItems');
+};
+
+export const isSubStepEmbedded = (subStep: SubStep): boolean => {
+  return Boolean(subStep.type === 'boolean' && (subStep as SubStepBoolean).embed);
 };

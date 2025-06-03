@@ -21,6 +21,15 @@
           <template v-if="opt.images" #collapsableContent>
             <rh-image-carousel :slides="getSlides(opt.images)" />
           </template>
+
+          <template v-if="embeddedSubStep && opt.id === embeddedSubStep.forOptionId">
+            <calculation-step-boolean-view
+              embed
+              :title="embeddedSubStep.object.title"
+              :value="embeddedSubStep.value as boolean || undefined"
+              @answer="(subStepAnswer) => handleEmbedSubStepAnswer(embeddedSubStep!.object.id, subStepAnswer)"
+            />
+          </template>
         </rh-collapse-item>
       </n-collapse>
     </n-radio-group>
@@ -30,20 +39,24 @@
 <script setup lang="ts">
 import { NH2, NRadio, NRadioGroup, NCollapse, NIcon } from 'naive-ui';
 import { EyeOutline, EyeOffOutline } from '@vicons/ionicons5';
-import { OptionItem } from '@/common/types';
+import { OptionItem, SubStep } from '@/common/types';
 import { onMounted, ref, Ref } from 'vue';
 import RhCollapseItem from '@app/components/RhCollapseItem.vue';
 import RhImageCarousel from '@app/components/RhImageCarousel.vue';
 import { RhImageCarouselPropsSlide } from '@app/components/RhImageCarousel.props';
+import CalculationStepBooleanView from '@app/views/calculation/CalculationStepBooleanView.vue';
+import { AnswerType } from '@app/stores/calculation/types';
 
 const { value, title, options } = defineProps<{
   options: OptionItem[];
+  embeddedSubStep?: { object: SubStep; forOptionId: OptionItem['id']; value: AnswerType | null } | null;
   value: OptionItem['id'] | null;
   title: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'answer', value: OptionItem['id'] | null): void;
+  (e: 'substep:answer', subStepId: SubStep['id'], value: AnswerType): void;
 }>();
 
 console.log('select:value', value);
@@ -57,14 +70,19 @@ const getSlides = (images: string[]): RhImageCarouselPropsSlide[] => {
     title: '',
   }));
 };
-const preloadImages = (images: string[]): void => {
-  images.forEach((img) => {
-    const image = new Image();
-    image.src = img;
-  });
+
+const handleEmbedSubStepAnswer = (subStepId: SubStep['id'], answer: AnswerType) => {
+  emit('substep:answer', subStepId, answer);
 };
 
 onMounted(() => {
+  const preloadImages = (images: string[]): void => {
+    images.forEach((img) => {
+      const image = new Image();
+      image.src = img;
+    });
+  };
+
   options.forEach((option) => {
     if (option.images && option.images.length > 0) {
       preloadImages(option.images);

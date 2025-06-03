@@ -1,6 +1,11 @@
 <template>
   <div class="calculation-step-boolean-view flex flex-col">
-    <n-h2>{{ title }}</n-h2>
+    <n-h2 v-if="!embed">
+      {{ title }}
+    </n-h2>
+    <div v-else class="calculation-step-boolean-view__title--embed">
+      {{ title }}
+    </div>
 
     <div class="calculation-step-boolean-view__buttons">
       <n-button-group size="large">
@@ -8,7 +13,7 @@
           v-for="item in BOOLEAN_ITEMS"
           :key="item.title"
           class="calculation-step-boolean-view__buttons__button"
-          size="large"
+          :size="embed ? 'small' : 'large'"
           :type="item.value === answer ? 'primary' : 'default'"
           @click="handleButtonClick(item.value)"
         >
@@ -37,6 +42,7 @@ const BOOLEAN_ITEMS = [
 const { value } = defineProps<{
   value?: boolean;
   title: string;
+  embed?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -61,6 +67,15 @@ onMounted(() => {
 .calculation-step-boolean-view {
   flex: 1;
   height: 100%;
+
+  &__title {
+    &--embed {
+      font-size: 14px;
+      line-height: 18px;
+      text-align: center;
+      margin-top: 8px;
+    }
+  }
 
   &__buttons {
     flex: 1;
