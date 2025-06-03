@@ -45,7 +45,7 @@ export const steps: Step[] = [
     id: 'walls_cover',
     title: 'Выберите покрытие для стен:',
     type: 'select',
-    optionsFrom: 'walls_cover',
+    optionsFrom: 'walls_covers',
     nextStep: 'floor_material',
   },
   {
@@ -65,7 +65,7 @@ export const steps: Step[] = [
     id: 'plumbing',
     title: 'Сантехника',
     type: 'boolean',
-    nextStep: 'summary',
+    nextStep: 'electro',
   },
   {
     id: 'electro',

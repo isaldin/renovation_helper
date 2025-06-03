@@ -6,15 +6,13 @@ import type { Calculator, CalculatorSettings } from '@/common/types';
 import { steps, stepsOptions as options } from './data';
 import { subSteps } from './substep';
 
-console.log('Firebase config:', firebaseConfig);
-
 const app = initializeApp(firebaseConfig);
 const store = getFirestore(app);
 
 export const createCalculator = async (companyId: string, version: string) => {
   const basePath = `companies/${companyId}/calculator`;
 
-  const calc: Omit<Calculator, 'id' | 'settings' | 'steps' | 'optionList'> = {
+  const calc: Omit<Calculator, 'id' | 'settings' | 'steps' | 'subSteps' | 'optionList'> = {
     version,
     companyId,
   };

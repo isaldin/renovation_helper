@@ -4,7 +4,7 @@ import { injectable } from 'tsyringe';
 export class TelegramWebAppService {
   public getValue(key: string): string | undefined {
     return {
-      calculatorId: 'SxU9GEG9o34PEcoVD0TH',
+      calculatorId: 'MLyNIoycZUT0qre0adhV',
       companyId: 'c1',
     }[key];
   }
