@@ -11083,6 +11083,11 @@ vue@^3.5.13:
     "@vue/server-renderer" "3.5.13"
     "@vue/shared" "3.5.13"
 
+vueperslides@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/vueperslides/-/vueperslides-3.6.0.tgz#96d9a2e440a3fb9c496f0e177d953f681a546026"
+  integrity sha512-ip2/Mvzhs9A21NnPQWsnx2JVoa0v5ecRNa3Kobyp6VTdxTH+xJRdT9bjVV3EVoK/YUyhYMpPJLExhB9udd91JA==
+
 vueuc@^0.4.63:
   version "0.4.64"
   resolved "https://registry.yarnpkg.com/vueuc/-/vueuc-0.4.64.tgz#80dc210ba65c739ed65c717ebb145ba4b479201d"

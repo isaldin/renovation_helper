@@ -11,7 +11,7 @@ export const calculationStoreActions: CalculationStoreActions = {
 
       this.steps = prepareSteps(calculator.steps, calculator.optionList);
       this.subSteps = calculator.subSteps;
-      this.currentStepId = this.firstStep?.id || null;
+      this.currentStepId = 'repair_type'; // this.firstStep?.id || null;
       this.status = 'ready';
     } catch (error) {
       console.error('Error fetching calculator:', error);

@@ -105,6 +105,7 @@ const handleGoToPrevStep = () => {
       display: flex;
       align-items: flex-start;
       width: 100%;
+      margin-bottom: 48px;
     }
   }
 

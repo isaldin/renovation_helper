@@ -6,6 +6,21 @@
       <n-collapse>
         <rh-collapse-item v-for="opt in options" :key="opt.id">
           <n-radio :value="opt.id" :label="opt.title" />
+
+          <template #collapseIcon="{ toggleCollapse }">
+            <n-icon :size="24" color="green" @click="toggleCollapse">
+              <eye-off-outline />
+            </n-icon>
+          </template>
+          <template #expandIcon="{ toggleCollapse }">
+            <n-icon :size="24" color="green" @click="toggleCollapse">
+              <eye-outline />
+            </n-icon>
+          </template>
+
+          <template v-if="opt.images" #collapsableContent>
+            <rh-image-carousel :slides="getSlides(opt.images)" />
+          </template>
         </rh-collapse-item>
       </n-collapse>
     </n-radio-group>
@@ -13,12 +28,15 @@
 </template>
 
 <script setup lang="ts">
-import { NH2, NRadio, NRadioGroup, NCollapse } from 'naive-ui';
+import { NH2, NRadio, NRadioGroup, NCollapse, NIcon } from 'naive-ui';
+import { EyeOutline, EyeOffOutline } from '@vicons/ionicons5';
 import { OptionItem } from '@/common/types';
-import { ref, Ref } from 'vue';
+import { onMounted, ref, Ref } from 'vue';
 import RhCollapseItem from '@app/components/RhCollapseItem.vue';
+import RhImageCarousel from '@app/components/RhImageCarousel.vue';
+import { RhImageCarouselPropsSlide } from '@app/components/RhImageCarousel.props';
 
-const { value } = defineProps<{
+const { value, title, options } = defineProps<{
   options: OptionItem[];
   value: OptionItem['id'] | null;
   title: string;
@@ -31,6 +49,28 @@ defineEmits<{
 console.log('select:value', value);
 
 const answer: Ref<OptionItem['id'] | null> = ref(value);
+
+const getSlides = (images: string[]): RhImageCarouselPropsSlide[] => {
+  return images.map((img, i) => ({
+    id: `img_${i}`,
+    imageUrl: img,
+    title: '',
+  }));
+};
+const preloadImages = (images: string[]): void => {
+  images.forEach((img) => {
+    const image = new Image();
+    image.src = img;
+  });
+};
+
+onMounted(() => {
+  options.forEach((option) => {
+    if (option.images && option.images.length > 0) {
+      preloadImages(option.images);
+    }
+  });
+});
 </script>
 
 <style lang="scss" scoped>

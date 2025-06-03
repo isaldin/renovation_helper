@@ -1,6 +1,6 @@
 <template>
   <div class="rh-image-carousel">
-    <vueper-slides :slide-ratio="1">
+    <vueper-slides :slide-ratio="1" :touchable="false">
       <vueper-slide v-for="slide in slides" :key="slide.id" :image="slide.imageUrl" :title="slide.title" />
     </vueper-slides>
   </div>
