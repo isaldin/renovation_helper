@@ -12,7 +12,7 @@
     <n-button type="info" @click="loadCalculator"> Попробовать заново </n-button>
   </div>
 
-  <div v-else class="calculation-view flex justify-center align-middle flex-col h-screen min-h-screen p-4">
+  <div v-else class="calculation-view flex justify-center align-middle flex-col min-h-screen p-4">
     <div class="calculation-view__step-info flex justify-center align-middle">
       <calculation-steps-info-view
         :current-step-idx="currentStepOrderNumber"
@@ -106,6 +106,17 @@ const handleGoToPrevStep = () => {
       align-items: flex-start;
       width: 100%;
     }
+  }
+
+  &__navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 999;
+    padding: 16px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
   }
 }
 
