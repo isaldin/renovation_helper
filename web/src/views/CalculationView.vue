@@ -4,7 +4,7 @@
   </div>
 
   <div v-else-if="notFound" class="flex justify-center align-middle h-screen px-4">
-    <n-h2>Калькулятор не найден</n-h2>
+    <n-h2 class="self-align-center"> Калькулятор не найден </n-h2>
   </div>
 
   <div v-else-if="error" class="flex justify-center align-middle h-screen flex-col px-4">
@@ -107,5 +107,9 @@ const handleGoToPrevStep = () => {
       width: 100%;
     }
   }
+}
+
+.self-align-center {
+  align-self: center;
 }
 </style>
