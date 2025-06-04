@@ -11,12 +11,6 @@
     },
     {
       "path": "./common"
-    },
-    {
-      "path": "./server-e2e"
-    },
-    {
-      "path": "./server"
     }
   ]
 }

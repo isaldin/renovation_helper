@@ -98,8 +98,6 @@
     "libs",
     "tools",
     "calc-tools",
-    "calc-tools-e2e",
-    "server",
-    "server-e2e"
+    "calc-tools-e2e"
   ]
 }
