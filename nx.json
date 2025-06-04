@@ -41,7 +41,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["bot-e2e/**/*", "calc-tools-e2e/**/*", "calc-tools-e2e/**/*"]
+      "exclude": ["bot-e2e/**/*", "calc-tools-e2e/**/*", "calc-tools-e2e/**/*", "server-e2e/**/*"]
     },
     {
       "plugin": "@nx/vite/plugin",
@@ -61,6 +61,16 @@
       "plugin": "@nx/playwright/plugin",
       "options": {
         "targetName": "e2e"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
       }
     }
   ],
