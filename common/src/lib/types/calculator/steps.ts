@@ -8,7 +8,7 @@ export type StepCommon = {
 };
 
 export type StepWithOptionsFrom = StepCommon & {
-  type: Omit<StepType, 'calc' | 'boolean'>;
+  type: 'select' | 'checkbox';
   optionsFrom?: OptionList['id'];
   nextStep: StepCommon['id'];
   multiple?: boolean;

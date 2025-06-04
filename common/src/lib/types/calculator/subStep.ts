@@ -1,5 +1,5 @@
 import { OptionItem } from './options';
-import { StepCommon, StepType } from './steps';
+import { StepCommon } from './steps';
 
 export type SubStep = SubStepWithOptionItems | SubStepBoolean;
 
@@ -9,7 +9,7 @@ export type SubStepCommon = StepCommon & {
 };
 
 export type SubStepWithOptionItems = SubStepCommon & {
-  type: Omit<StepType, 'calc' | 'boolean'>;
+  type: 'checkbox' | 'select';
   optionItems: OptionItem[];
   multiple?: boolean;
   defaultValue?: string | string[];
