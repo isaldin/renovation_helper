@@ -1,13 +1,13 @@
 <template>
-  <div v-if="loading" class="flex justify-center align-middle h-screen px-4">
+  <div v-if="loading" class="flex justify-center align-middle hs-screen px-4">
     <n-spin size="large" />
   </div>
 
-  <div v-else-if="notFound" class="flex justify-center align-middle h-screen px-4">
+  <div v-else-if="notFound" class="flex justify-center align-middle px-4 hs-screen">
     <n-h2 class="self-align-center"> Калькулятор не найден </n-h2>
   </div>
 
-  <div v-else-if="error" class="flex justify-center align-middle h-screen flex-col px-4">
+  <div v-else-if="error" class="flex justify-center align-middle hs-screen flex-col px-4">
     <n-h2>Ошибка загрузки калькулятора</n-h2>
     <n-button type="info" @click="loadCalculator"> Попробовать заново </n-button>
   </div>
@@ -123,5 +123,10 @@ const handleGoToPrevStep = () => {
 
 .self-align-center {
   align-self: center;
+}
+
+.hs-screen {
+  height: 100vh;
+  height: 100dvh;
 }
 </style>
