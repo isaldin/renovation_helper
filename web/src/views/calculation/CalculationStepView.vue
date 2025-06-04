@@ -38,6 +38,8 @@
     :value="valueForStep as unknown as boolean"
     @answer="handleAnswer"
   />
+
+  <calculation-step-summary-view v-else-if="step.type === 'calc'" />
 </template>
 
 <script setup lang="ts">
@@ -50,6 +52,7 @@ import { OptionItem, SubStep, SubStepBoolean } from '@/common/types';
 import CalculationStepBooleanView from '@app/views/calculation/CalculationStepBooleanView.vue';
 import { AnswerType, StepWithOptions } from '@app/stores/calculation/types';
 import { isStepWithOptions, isStepWithOptionsFrom, isSubStepWithOptionItems } from '@app/stores/calculation/helpers';
+import CalculationStepSummaryView from '@app/views/calculation/CalculationStepSummaryView.vue';
 
 const calculationStore = useCalculationStore();
 
