@@ -5,15 +5,22 @@
         <component :is="getComponentForStep(subStep.type)" embedded :step="subStep" :answer="answerForSubStep" />
       </template>
     </component>
+    <n-icon class="summary-item-view__edit-btn" :size="16" @click="handleEditStepClick(step.id)">
+      <create-outline />
+    </n-icon>
   </div>
 </template>
 
 <script setup lang="ts">
+import { NIcon } from 'naive-ui';
+import { CreateOutline } from '@vicons/ionicons5';
 import { AnswerType } from '@app/stores/calculation/types';
-import { StepType, SubStep } from '@/common/types';
+import { Step, StepType, SubStep } from '@/common/types';
 import { computed, defineAsyncComponent } from 'vue';
 import { useCalculationStore } from '@app/stores/calculation';
 import { SummaryItemProps } from '@app/components/summary/summary.types';
+import { getRouterService } from '@app/container';
+import { RouteNames } from '@app/router/routeNames';
 
 const { step, answer } = defineProps<SummaryItemProps>();
 
@@ -48,10 +55,21 @@ const answerForSubStep = computed((): AnswerType | null => {
 
   return store.answers[subStep.value.id] || null;
 });
+
+const handleEditStepClick = (stepId: Step['id']) => {
+  const { companyId, calculatorId } = getRouterService().getRouterParams() as Record<string, string>;
+  getRouterService().goTo(RouteNames.calculation, { companyId, calculatorId, stepId });
+};
 </script>
 
 <style lang="scss" scoped>
 .summary-item-view {
-  //
+  position: relative;
+
+  &__edit-btn {
+    position: absolute;
+    right: 16px;
+    top: 0;
+  }
 }
 </style>

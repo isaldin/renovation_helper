@@ -1,26 +1,30 @@
 <template>
-  <div
-    class="flex"
-    :class="{
-      'justify-between': !isFirst,
-      'justify-end': isFirst,
-      'justify-start': isLast,
-    }"
-  >
-    <n-button v-if="!isFirst" tertiary circle>
-      <template #icon>
-        <n-icon @click="$emit('prev')">
-          <arrow-back-icon />
-        </n-icon>
-      </template>
-    </n-button>
-    <n-button v-if="!isLast" :disabled="disabled" tertiary circle>
-      <template #icon>
-        <n-icon @click="disabled ? void 0 : $emit('next')">
-          <arrow-forward-icon />
-        </n-icon>
-      </template>
-    </n-button>
+  <div>
+    <slot>
+      <div
+        class="flex"
+        :class="{
+          'justify-between': !isFirst,
+          'justify-end': isFirst,
+          'justify-start': isLast,
+        }"
+      >
+        <n-button v-if="!isFirst" tertiary circle>
+          <template #icon>
+            <n-icon @click="$emit('prev')">
+              <arrow-back-icon />
+            </n-icon>
+          </template>
+        </n-button>
+        <n-button v-if="!isLast" :disabled="disabled" tertiary circle>
+          <template #icon>
+            <n-icon @click="disabled ? void 0 : $emit('next')">
+              <arrow-forward-icon />
+            </n-icon>
+          </template>
+        </n-button>
+      </div>
+    </slot>
   </div>
 </template>
 <script setup lang="ts">

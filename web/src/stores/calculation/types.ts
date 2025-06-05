@@ -25,6 +25,7 @@ export type CalculationStoreActions = {
   fetchCalculator: (companyId: string, calculatorId: string) => Promise<void>;
   goToNextStep: () => void;
   goToPrevStep: () => void;
+  goToStep(stepId: Step['id']): void;
   setAnswer: (stepId: string, answer: AnswerType | null) => void;
 };
 

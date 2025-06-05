@@ -1,76 +1,63 @@
 <template>
-  <calculation-step-area-view
-    v-if="step.type === 'number'"
-    :key="step.id"
-    class="flex-1"
-    :title="step.title"
-    :value="valueForStep as number || 0"
-    @answer="handleAnswer"
-  />
-
-  <calculation-step-select-view
-    v-else-if="step.type === 'select' && !isMultipleSelect(step)"
+  <component
+    :is="getComponentForStep(step)"
+    v-if="getComponentForStep(step)"
     :key="step.id"
     class="flex-1"
     :title="step.title"
     :options="getOptionItems(step)"
-    :value="valueForStep as unknown as OptionItem['id'] || null"
+    :value="valueForStep"
     :embedded-sub-step="embeddedSubStep"
     @answer="handleAnswer"
-    @substep:answer="handleSubStepAnswer"
+    @embedded-substep:answer="handleEmbeddedSubStepAnswer($event)"
   />
-
-  <calculation-step-multiple-select-view
-    v-else-if="step.type === 'checkbox' && isMultipleSelect(step)"
-    :key="step.id"
-    class="flex-1"
-    :title="step.title"
-    :options="getOptionItems(step)"
-    :value="valueForStep as unknown as OptionItem['id'][] || null"
-    @answer="handleAnswer"
-  />
-
-  <calculation-step-boolean-view
-    v-else-if="step.type === 'boolean'"
-    :key="step.id"
-    class="flex-1"
-    :title="step.title"
-    :value="valueForStep as unknown as boolean"
-    @answer="handleAnswer"
-  />
-
-  <calculation-step-summary-view v-else-if="step.type === 'calc'" />
 </template>
 
 <script setup lang="ts">
 import CalculationStepAreaView from '@app/views/calculation/CalculationStepAreaView.vue';
-import { useCalculationStore } from '@app/stores/calculation';
 import { computed, toRefs } from 'vue';
 import CalculationStepSelectView from '@app/views/calculation/CalculationStepSelectView.vue';
 import CalculationStepMultipleSelectView from '@app/views/calculation/CalculationStepMultipleSelectView.vue';
-import { OptionItem, SubStep, SubStepBoolean } from '@/common/types';
+import { OptionItem, SubStep } from '@/common/types';
 import CalculationStepBooleanView from '@app/views/calculation/CalculationStepBooleanView.vue';
 import { AnswerType, StepWithOptions } from '@app/stores/calculation/types';
 import { isStepWithOptions, isStepWithOptionsFrom, isSubStepWithOptionItems } from '@app/stores/calculation/helpers';
 import CalculationStepSummaryView from '@app/views/calculation/CalculationStepSummaryView.vue';
 
-const calculationStore = useCalculationStore();
-
 const props = defineProps<{
   step: StepWithOptions | SubStep;
+  answer: AnswerType | null;
+  embeddedSubStep: SubStep | null;
+  subStepAnswer?: AnswerType | null;
 }>();
+
+const emit = defineEmits<{
+  (e: 'update:answer', answer: AnswerType | null): void;
+  (e: 'update:sub-step-answer', answer: AnswerType | null): void;
+  (e: 'update:embedded-substep-answer', answer: AnswerType | null): void;
+}>();
+
+const getComponentForStep = (step: StepWithOptions | SubStep) => {
+  if (step.type === 'number') {
+    return CalculationStepAreaView;
+  } else if (step.type === 'select' && !isMultipleSelect(step)) {
+    return CalculationStepSelectView;
+  } else if (step.type === 'checkbox' && isMultipleSelect(step)) {
+    return CalculationStepMultipleSelectView;
+  } else if (step.type === 'boolean') {
+    return CalculationStepBooleanView;
+  } else if (step.type === 'calc') {
+    return CalculationStepSummaryView;
+  }
+
+  return null;
+};
 
 const { step } = toRefs(props);
 
-const valueForStep = computed(() => calculationStore.answers[step.value.id] ?? getDefaultValue(step.value));
-
-const handleAnswer = (answer: AnswerType | null) => {
-  calculationStore.setAnswer(step.value.id, answer);
-};
-
-const handleSubStepAnswer = (subStepId: SubStep['id'], answer: AnswerType | null) => {
-  calculationStore.setAnswer(subStepId, answer);
-};
+const valueForStep = computed(
+  () => (isSubStep(step.value) ? props.subStepAnswer : props.answer) ?? getDefaultValue(step.value)
+);
 
 const isMultipleSelect = (step: StepWithOptions | SubStep): boolean => {
   return (isStepWithOptionsFrom(step) || isSubStepWithOptionItems(step)) && !!step.multiple;
@@ -94,25 +81,20 @@ const getOptionItems = (step: StepWithOptions | SubStep): OptionItem[] => {
   return [];
 };
 
-const embeddedSubStep = computed(() => {
-  const answer = calculationStore.answers[step.value.id];
-
-  if (!answer) {
-    return null;
+const handleAnswer = (answer: AnswerType | null) => {
+  if (isSubStep(step.value)) {
+    emit('update:sub-step-answer', answer);
+    return;
   }
 
-  const subStep = calculationStore.subStepForAnswer(step.value.id, answer);
+  emit('update:answer', answer);
+};
 
-  if (subStep?.type === 'boolean' && (subStep as SubStepBoolean).embed) {
-    const subStepAnswer = calculationStore.answers[subStep.id];
+const handleEmbeddedSubStepAnswer = (answer: AnswerType | null) => {
+  emit('update:embedded-substep-answer', answer);
+};
 
-    return {
-      object: subStep,
-      forOptionId: answer as string,
-      value: subStepAnswer,
-    } satisfies { object: SubStep; forOptionId: OptionItem['id']; value: AnswerType | null };
-  }
-
-  return null;
-});
+const isSubStep = (input: StepWithOptions | SubStep): input is SubStep => {
+  return Object.hasOwn(input, 'choiceFromSource');
+};
 </script>

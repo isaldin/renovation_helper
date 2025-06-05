@@ -1,6 +1,7 @@
 import { AnswerType, CalculationStore, CalculationStoreActions } from '@app/stores/calculation/types';
 import { getCalculatorService } from '@app/container';
 import { getNextStepId, isSubStepEmbedded, prepareSteps } from '@app/stores/calculation/helpers';
+import { Step } from '@/common/types';
 
 export const calculationStoreActions: CalculationStoreActions = {
   async fetchCalculator(this: CalculationStore, companyId: string, calculatorId: string) {
@@ -50,6 +51,13 @@ export const calculationStoreActions: CalculationStoreActions = {
     if (currentStepIdx && currentStepIdx > 0) {
       this.currentStepId = this.orderedStepIds[currentStepIdx - 1];
     }
+  },
+  goToStep(this: CalculationStore, stepId: Step['id']) {
+    if (this.currentStepId === stepId) {
+      return;
+    }
+
+    this.currentStepId = stepId;
   },
   setAnswer(this: CalculationStore, stepId: string, answer: AnswerType | null) {
     // check if before was set subStep answer for this step and delete

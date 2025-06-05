@@ -9,7 +9,7 @@ export const routes: RouteRecordRaw[] = [
     component: HomeView,
   },
   {
-    path: '/calculation/:companyId?/:calculatorId?',
+    path: '/calculation/:companyId?/:calculatorId?/:stepId?/:subStepId?',
     name: RouteNames.calculation,
     component: () => import('../views/CalculationView.vue'),
   },

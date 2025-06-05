@@ -22,12 +22,12 @@
             <rh-image-carousel :slides="getSlides(opt.images)" />
           </template>
 
-          <template v-if="embeddedSubStep && opt.id === embeddedSubStep.forOptionId">
+          <template v-if="embeddedSubStep && opt.id === answer">
             <calculation-step-boolean-view
               embed
-              :title="embeddedSubStep.object.title"
-              :value="embeddedSubStep.value as boolean || undefined"
-              @answer="(subStepAnswer) => handleEmbedSubStepAnswer(embeddedSubStep!.object.id, subStepAnswer)"
+              :title="embeddedSubStep?.title"
+              :value="undefined"
+              @answer="handleEmbedSubStepAnswer"
             />
           </template>
         </rh-collapse-item>
@@ -47,19 +47,17 @@ import { RhImageCarouselPropsSlide } from '@app/components/RhImageCarousel.props
 import CalculationStepBooleanView from '@app/views/calculation/CalculationStepBooleanView.vue';
 import { AnswerType } from '@app/stores/calculation/types';
 
-const { value, title, options } = defineProps<{
+const { value, title, options, embeddedSubStep } = defineProps<{
   options: OptionItem[];
-  embeddedSubStep?: { object: SubStep; forOptionId: OptionItem['id']; value: AnswerType | null } | null;
+  embeddedSubStep: SubStep | null;
   value: OptionItem['id'] | null;
   title: string;
 }>();
 
 const emit = defineEmits<{
   (e: 'answer', value: OptionItem['id'] | null): void;
-  (e: 'substep:answer', subStepId: SubStep['id'], value: AnswerType): void;
+  (e: 'embedded-substep:answer', value: AnswerType): void;
 }>();
-
-console.log('select:value', value);
 
 const answer: Ref<OptionItem['id'] | null> = ref(value);
 
@@ -71,8 +69,8 @@ const getSlides = (images: string[]): RhImageCarouselPropsSlide[] => {
   }));
 };
 
-const handleEmbedSubStepAnswer = (subStepId: SubStep['id'], answer: AnswerType) => {
-  emit('substep:answer', subStepId, answer);
+const handleEmbedSubStepAnswer = (answer: AnswerType) => {
+  emit('embedded-substep:answer', answer);
 };
 
 onMounted(() => {

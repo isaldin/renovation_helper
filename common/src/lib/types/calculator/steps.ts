@@ -7,16 +7,19 @@ export type StepCommon = {
   title: string;
 };
 
-export type StepWithOptionsFrom = StepCommon & {
+type StepWithNextStep = StepCommon & { nextStep: StepCommon['id'] };
+
+export type StepWithOptionsFrom = StepWithNextStep & {
   type: 'select' | 'checkbox';
   optionsFrom?: OptionList['id'];
-  nextStep: StepCommon['id'];
   multiple?: boolean;
   defaultValue?: string | string[];
 };
 
-export type StepWithBoolean = StepCommon & { type: 'boolean'; nextStep: Step['id'] };
+export type StepWithNumber = StepWithNextStep & { type: 'number' };
+
+export type StepWithBoolean = StepWithNextStep & { type: 'boolean' };
 
 type StepCalc = StepCommon & { type: 'calc' };
 
-export type Step = StepWithOptionsFrom | StepWithBoolean | StepCalc;
+export type Step = StepWithOptionsFrom | StepWithBoolean | StepWithNumber | StepCalc;
