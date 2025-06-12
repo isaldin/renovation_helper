@@ -3,7 +3,7 @@ import { computed, ComputedRef } from 'vue';
 import { EntityNotFoundError } from '@/common/errors';
 import { AnswerType, StepWithOptions } from '@app/stores/calculation/types';
 import { useRouteParams } from '@app/compositions/calculation/useRouteParams';
-import { Step, SubStep } from '@/common/types';
+import { Step, StepId, SubStep } from '@/common/types';
 
 export const useCalculation = () => {
   const calculationStore = useCalculationStore();
@@ -20,11 +20,8 @@ export const useCalculation = () => {
     return calculationStore.subSteps.find((subStep) => subStep.id === subStepId.value) || null;
   });
 
-  const currentStep: ComputedRef<StepWithOptions | null> = computed(
-    () => stepFromRoute.value || calculationStore.currentStep
-  );
-
-  const currentSubStep = computed(() => subStepFromRoute.value || calculationStore.currentSubStep);
+  const currentStep = computed(() => calculationStore.currentStep);
+  const currentSubStep = computed(() => calculationStore.currentSubStep);
 
   const loading = computed(() => calculationStore.loadingStatus === 'loading');
   const notFound = computed(
@@ -92,6 +89,19 @@ export const useCalculation = () => {
     return calculationStore.answers[stepId] ?? null;
   };
 
+  const isStep = (id: StepId): boolean => calculationStore.steps[id] !== undefined;
+
+  const subStepForAnswer = (stepId: Step['id'], answer: AnswerType): SubStep | null =>
+    calculationStore.subStepForAnswer(stepId, answer);
+
+  const answerForStepId = (stepId: StepId): AnswerType | null => calculationStore.answers[stepId] ?? null;
+
+  const isEditMode = computed(() => !!calculationStore.editMode);
+
+  const setEditMode = (editMode: boolean) => calculationStore.setEditMode(editMode);
+
+  const setCurrentStep = (stepId: StepId) => (calculationStore.currentStepId = stepId);
+
   return {
     currentSubStep,
     loading,
@@ -111,5 +121,11 @@ export const useCalculation = () => {
     summaryStep,
     setSummaryStep,
     getAnswerForStep,
+    isStep,
+    subStepForAnswer,
+    answerForStepId,
+    isEditMode,
+    setEditMode,
+    setCurrentStep,
   };
 };

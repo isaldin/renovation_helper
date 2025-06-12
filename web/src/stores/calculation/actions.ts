@@ -1,6 +1,6 @@
 import { AnswerType, CalculationStore, CalculationStoreActions } from '@app/stores/calculation/types';
 import { getCalculatorService } from '@app/container';
-import { getNextStepId, isSubStepEmbedded, prepareSteps } from '@app/stores/calculation/helpers';
+import { getNextStepId, prepareSteps } from '@app/stores/calculation/helpers';
 import { Step } from '@/common/types';
 
 export const calculationStoreActions: CalculationStoreActions = {
@@ -12,7 +12,7 @@ export const calculationStoreActions: CalculationStoreActions = {
 
       this.steps = prepareSteps(calculator.steps, calculator.optionList);
       this.subSteps = calculator.subSteps;
-      this.currentStepId = this.firstStep?.id || null;
+      this.currentStepId = this.currentStepId || this.firstStep?.id || null;
       this.status = 'ready';
     } catch (error) {
       console.error('Error fetching calculator:', error);
@@ -21,18 +21,6 @@ export const calculationStoreActions: CalculationStoreActions = {
     }
   },
   goToNextStep(this: CalculationStore) {
-    const currentAnswer = this.answers[this.currentStepId!];
-    if (currentAnswer == null) {
-      return;
-    }
-
-    const subStep = this.subStepForAnswer(this.currentStepId!, currentAnswer);
-    if (!this.currentSubStep && subStep && !isSubStepEmbedded(subStep)) {
-      this.currentSubStepId = subStep.id;
-      return;
-    }
-
-    this.currentSubStepId = null;
     this.currentStepId = getNextStepId(this.currentStep);
   },
   goToPrevStep(this: CalculationStore) {
@@ -70,5 +58,8 @@ export const calculationStoreActions: CalculationStoreActions = {
     }
 
     this.answers[stepId] = answer;
+  },
+  setEditMode(this: CalculationStore, editMode: boolean) {
+    this.editMode = editMode;
   },
 };

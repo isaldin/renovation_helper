@@ -1,4 +1,12 @@
-import { OptionList, Step, StepWithOptionsFrom, SubStep, SubStepBoolean, SubStepWithOptionItems } from '@/common/types';
+import {
+  OptionItem,
+  OptionList,
+  Step,
+  StepWithOptionsFrom,
+  SubStep,
+  SubStepBoolean,
+  SubStepWithOptionItems,
+} from '@/common/types';
 import { StepWithOptions } from '@app/stores/calculation/types';
 import { hasField } from '@app/utils/hasField';
 
@@ -19,6 +27,7 @@ export const prepareSteps = (steps: Step[], optionList: OptionList[]): Record<st
       ...step,
       options: optionList.find((ol) => isStepWithOptionsFrom(step) && ol.id === step.optionsFrom)?.options || [],
       subSteps: [],
+      defaultValue: isStepWithOptionsFrom(step) ? (step.defaultValue as string) : undefined,
     };
     return acc;
   }, {});
@@ -48,4 +57,28 @@ export const isSubStepWithOptionItems = (input: unknown): input is SubStepWithOp
 
 export const isSubStepEmbedded = (subStep: SubStep): boolean => {
   return Boolean(subStep.type === 'boolean' && (subStep as SubStepBoolean).embed);
+};
+
+export const getOptionItems = (step: StepWithOptions | SubStep): OptionItem[] => {
+  if (isSubStepWithOptionItems(step)) {
+    return step.optionItems;
+  } else if (isStepWithOptions(step)) {
+    return step.options;
+  }
+  return [];
+};
+
+export const getDefaultOptionId = (step: StepWithOptions | SubStep): OptionItem['id'] | null => {
+  if (isSubStepWithOptionItems(step)) {
+    if (typeof step.defaultValue === 'string') {
+      return step.defaultValue;
+    }
+
+    return null;
+  }
+  if (!isStepWithOptions(step)) {
+    return null;
+  }
+
+  return step.defaultValue || null;
 };

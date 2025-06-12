@@ -1,33 +1,20 @@
-import { Ref, ref, watchEffect } from 'vue';
-import { SubStep, SubStepBoolean } from '@/common/types';
+import { computed, Ref } from 'vue';
+import { SubStep } from '@/common/types';
 import { AnswerType, StepWithOptions } from '@app/stores/calculation/types';
 import { useCalculationStore } from '@app/stores/calculation';
 
 export const useSubStep = (step: Ref<StepWithOptions | SubStep | null>, answer: Ref<AnswerType | null>) => {
   const store = useCalculationStore();
 
-  const subStep = ref<SubStep | null>(null);
-  const embeddedSubStep = ref<SubStep | null>(null);
-
-  watchEffect(() => {
+  const subStep = computed(() => {
     if (!answer.value || !step.value) {
-      subStep.value = null;
-      embeddedSubStep.value = null;
-      return;
+      return null;
     }
 
-    subStep.value = store.subStepForAnswer(step.value.id, answer.value);
-
-    if (subStep.value?.type === 'boolean' && (subStep.value as SubStepBoolean).embed) {
-      embeddedSubStep.value = subStep.value;
-      return;
-    }
-
-    embeddedSubStep.value = null;
+    return store.subStepForAnswer(step.value.id, answer.value);
   });
 
   return {
-    embeddedSubStep,
-    subStepForAnswer: subStep,
+    subStep,
   };
 };

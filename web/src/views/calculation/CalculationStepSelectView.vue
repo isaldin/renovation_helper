@@ -1,96 +1,69 @@
 <template>
-  <div class="flex flex-col justify-center align-middle">
-    <n-h2>{{ title }}</n-h2>
-
-    <n-radio-group v-model:value="answer" size="large" @update:value="$emit('answer', $event)">
-      <n-collapse>
-        <rh-collapse-item v-for="opt in options" :key="opt.id">
-          <n-radio :value="opt.id" :label="opt.title" />
-
-          <template #collapseIcon="{ toggleCollapse }">
-            <n-icon :size="24" color="green" @click="toggleCollapse">
-              <eye-off-outline />
-            </n-icon>
-          </template>
-          <template #expandIcon="{ toggleCollapse }">
-            <n-icon :size="24" color="green" @click="toggleCollapse">
-              <eye-outline />
-            </n-icon>
-          </template>
-
-          <template v-if="opt.images" #collapsableContent>
-            <rh-image-carousel :slides="getSlides(opt.images)" />
-          </template>
-
-          <template v-if="embeddedSubStep && opt.id === answer">
-            <calculation-step-boolean-view
-              embed
-              :title="embeddedSubStep?.title"
-              :value="undefined"
-              @answer="handleEmbedSubStepAnswer"
-            />
-          </template>
-        </rh-collapse-item>
-      </n-collapse>
-    </n-radio-group>
+  <div class="calculation-step-select-view">
+    <rh-answer-select :title="title" :options="options" :value="stepAnswer" @answer="handleAnswer">
+      <template v-if="embeddedSubStep" #append="{ itemValue }">
+        <rh-boolean-input
+          v-if="itemValue === stepAnswer"
+          embed
+          :title="embeddedSubStep.title"
+          :value="embeddedStepAnswer as boolean"
+          @answer="handleEmbeddedSubStepAnswer"
+        />
+      </template>
+    </rh-answer-select>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NH2, NRadio, NRadioGroup, NCollapse, NIcon } from 'naive-ui';
-import { EyeOutline, EyeOffOutline } from '@vicons/ionicons5';
-import { OptionItem, SubStep } from '@/common/types';
-import { onMounted, ref, Ref } from 'vue';
-import RhCollapseItem from '@app/components/RhCollapseItem.vue';
-import RhImageCarousel from '@app/components/RhImageCarousel.vue';
-import { RhImageCarouselPropsSlide } from '@app/components/RhImageCarousel.props';
-import CalculationStepBooleanView from '@app/views/calculation/CalculationStepBooleanView.vue';
+import RhAnswerSelect from '@app/components/RhAnswerSelect.vue';
+import { CalculationStepViewEmits, CalculationStepViewProps } from '@app/views/calculation/CalculationStepView.types';
+import { computed, ComputedRef, watch } from 'vue';
+import { useCalculationStore } from '@app/stores/calculation';
+import { useSubStep } from '@app/compositions/calculation/useSubStep';
+import { getDefaultOptionId, getOptionItems, isSubStepEmbedded } from '@app/stores/calculation/helpers';
+import { OptionItem } from '@/common/types';
 import { AnswerType } from '@app/stores/calculation/types';
+import RhBooleanInput from '@app/components/RhBooleanInput.vue';
 
-const { value, title, options, embeddedSubStep } = defineProps<{
-  options: OptionItem[];
-  embeddedSubStep: SubStep | null;
-  value: OptionItem['id'] | null;
-  title: string;
-}>();
+const { stepId, answersMap } = defineProps<CalculationStepViewProps>();
 
-const emit = defineEmits<{
-  (e: 'answer', value: OptionItem['id'] | null): void;
-  (e: 'embedded-substep:answer', value: AnswerType): void;
-}>();
+const emit = defineEmits<CalculationStepViewEmits>();
 
-const answer: Ref<OptionItem['id'] | null> = ref(value);
+const store = useCalculationStore();
 
-const getSlides = (images: string[]): RhImageCarouselPropsSlide[] => {
-  return images.map((img, i) => ({
-    id: `img_${i}`,
-    imageUrl: img,
-    title: '',
-  }));
-};
+const step = computed(() => store.steps[stepId]);
 
-const handleEmbedSubStepAnswer = (answer: AnswerType) => {
-  emit('embedded-substep:answer', answer);
-};
+const options = computed(() =>
+  getOptionItems(store.steps[stepId] || store.subSteps.find((subStep) => subStep.id === stepId))
+);
 
-onMounted(() => {
-  const preloadImages = (images: string[]): void => {
-    images.forEach((img) => {
-      const image = new Image();
-      image.src = img;
-    });
-  };
+const stepAnswer: ComputedRef<OptionItem['id'] | null> = computed(
+  () => (answersMap[stepId] as OptionItem['id']) ?? getDefaultOptionId(step.value) ?? null
+);
 
-  options.forEach((option) => {
-    if (option.images && option.images.length > 0) {
-      preloadImages(option.images);
-    }
-  });
+const embeddedStepAnswer = computed(() => {
+  if (!embeddedSubStep.value) {
+    return null;
+  }
+
+  return answersMap[embeddedSubStep.value.id];
 });
+
+const { subStep } = useSubStep(step, stepAnswer);
+
+const embeddedSubStep = computed(() => (subStep.value && isSubStepEmbedded(subStep.value) ? subStep.value : null));
+
+const handleAnswer = (answer: OptionItem['id'] | null) => {
+  emit('update:answers-map', { [stepId]: answer });
+};
+
+const handleEmbeddedSubStepAnswer = (answer: AnswerType | null) => {
+  emit('update:answers-map', { ...answersMap, [embeddedSubStep.value!.id]: answer });
+};
 </script>
 
 <style lang="scss" scoped>
-:deep(.n-radio) {
-  width: 100%;
+.calculation-step-select-view {
+  //
 }
 </style>

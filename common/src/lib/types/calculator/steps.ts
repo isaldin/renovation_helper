@@ -1,9 +1,11 @@
 import { OptionList } from './options';
 
+export type StepId = string;
+
 export type StepType = 'select' | 'checkbox' | 'number' | 'boolean' | 'calc';
 
 export type StepCommon = {
-  id: string;
+  id: StepId;
   title: string;
 };
 

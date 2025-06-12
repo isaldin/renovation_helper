@@ -7,4 +7,5 @@ export const calculationStoreState = (): CalculationStoreState => ({
   subSteps: [],
   answers: {},
   currentStepId: null,
+  editMode: undefined,
 });

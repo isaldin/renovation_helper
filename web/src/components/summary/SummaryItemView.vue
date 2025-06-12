@@ -15,16 +15,16 @@
 import { NIcon } from 'naive-ui';
 import { CreateOutline } from '@vicons/ionicons5';
 import { AnswerType } from '@app/stores/calculation/types';
-import { Step, StepType, SubStep } from '@/common/types';
+import { StepId, StepType, SubStep } from '@/common/types';
 import { computed, defineAsyncComponent } from 'vue';
 import { useCalculationStore } from '@app/stores/calculation';
 import { SummaryItemProps } from '@app/components/summary/summary.types';
-import { getRouterService } from '@app/container';
-import { RouteNames } from '@app/router/routeNames';
+import { useCalculation } from '@app/compositions/calculation/useCalculation';
 
 const { step, answer } = defineProps<SummaryItemProps>();
 
 const store = useCalculationStore();
+const { setEditMode, setCurrentStep } = useCalculation();
 
 const summaryComponentItemsMap: Record<StepType, any> = {
   boolean: defineAsyncComponent(() => import('@app/components/summary/SummaryBooleanItem.vue')),
@@ -56,9 +56,9 @@ const answerForSubStep = computed((): AnswerType | null => {
   return store.answers[subStep.value.id] || null;
 });
 
-const handleEditStepClick = (stepId: Step['id']) => {
-  const { companyId, calculatorId } = getRouterService().getRouterParams() as Record<string, string>;
-  getRouterService().goTo(RouteNames.calculation, { companyId, calculatorId, stepId });
+const handleEditStepClick = (stepId: StepId) => {
+  setEditMode(true);
+  setCurrentStep(stepId);
 };
 </script>
 

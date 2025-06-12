@@ -7,6 +7,7 @@ type CalculatorStoreLoadingStatus = 'loading' | 'ready' | 'error';
 
 export type StepWithOptions = Omit<Step, 'optionsFrom'> & {
   options: OptionList['options'];
+  defaultValue?: OptionItem['id'];
   subSteps: SubStep[];
 };
 
@@ -19,6 +20,7 @@ export type CalculationStoreState = {
   answers: Record<Step['id'], AnswerType | null>;
   currentStepId: Step['id'] | null;
   currentSubStepId?: SubStep['id'] | null;
+  editMode?: boolean;
 };
 
 export type CalculationStoreActions = {
@@ -27,6 +29,7 @@ export type CalculationStoreActions = {
   goToPrevStep: () => void;
   goToStep(stepId: Step['id']): void;
   setAnswer: (stepId: string, answer: AnswerType | null) => void;
+  setEditMode: (editMode: boolean) => void;
 };
 
 export type CalculationStoreGetters = {

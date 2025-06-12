@@ -1,95 +1,46 @@
 <template>
-  <div class="calculation-step-boolean-view flex flex-col">
-    <n-h2 v-if="!embed">
-      {{ title }}
-    </n-h2>
-    <div v-else class="calculation-step-boolean-view__title--embed">
-      {{ title }}
-    </div>
-
-    <div class="calculation-step-boolean-view__buttons">
-      <n-button-group size="large">
-        <n-button
-          v-for="item in BOOLEAN_ITEMS"
-          :key="item.title"
-          class="calculation-step-boolean-view__buttons__button"
-          :size="embed ? 'small' : 'large'"
-          :type="item.value === answer ? 'primary' : 'default'"
-          @click="handleButtonClick(item.value)"
-        >
-          {{ item.title }}
-        </n-button>
-      </n-button-group>
-    </div>
+  <div class="calculation-step-boolean-view">
+    <rh-boolean-input :title="title" :value="stepAnswer" @answer="handleAnswer" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
-import { NH2, NButtonGroup, NButton } from 'naive-ui';
+import { CalculationStepViewEmits, CalculationStepViewProps } from '@app/views/calculation/CalculationStepView.types';
+import RhBooleanInput from '@app/components/RhBooleanInput.vue';
+import { useCalculationStore } from '@app/stores/calculation';
+import { computed, ComputedRef, onMounted } from 'vue';
 
-const BOOLEAN_ITEMS = [
-  {
-    title: 'Да',
-    value: true,
-  },
-  {
-    title: 'Нет',
-    value: false,
-  },
-];
+const { stepId, answersMap } = defineProps<CalculationStepViewProps>();
 
-const { value } = defineProps<{
-  value?: boolean;
-  title: string;
-  embed?: boolean;
-}>();
+const emit = defineEmits<CalculationStepViewEmits>();
 
-const emit = defineEmits<{
-  (e: 'answer', value: boolean): void;
-}>();
+const store = useCalculationStore();
 
-const answer: Ref<boolean> = ref(value ?? true);
+const stepAnswer: ComputedRef<boolean> = computed(() => {
+  const answer = store.answers[stepId];
+  if (answer == null) {
+    return true;
+  }
 
-const handleButtonClick = (value: boolean) => {
-  answer.value = value;
-  emit('answer', value);
+  return answer as boolean;
+});
+
+const handleAnswer = (answer: boolean) => {
+  emit('update:answers-map', { [stepId]: answer });
 };
 
 onMounted(() => {
-  if (value !== answer.value) {
-    emit('answer', answer.value);
+  if (answersMap[stepId] == null) {
+    // Initialize with default value if not set
+    emit('update:answers-map', { [stepId]: true });
   }
 });
 </script>
 
 <style lang="scss" scoped>
 .calculation-step-boolean-view {
-  flex: 1;
-  height: 100%;
-
-  &__title {
-    &--embed {
-      font-size: 14px;
-      line-height: 18px;
-      text-align: center;
-      margin-top: 8px;
-    }
-  }
-
-  &__buttons {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    :deep(.n-button-group) {
-      width: 100%;
-    }
-
-    &__button {
-      flex: 1;
-    }
-  }
+  display: flex;
+  min-height: 100%;
+  align-items: center;
 }
 </style>

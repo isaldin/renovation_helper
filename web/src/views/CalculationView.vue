@@ -12,70 +12,61 @@
     <n-button type="info" @click="loadCalculator"> Попробовать заново </n-button>
   </div>
 
-  <div v-else class="calculation-view flex justify-center align-middle flex-col min-h-screen p-4">
-    <div class="calculation-view__step-info flex justify-center align-middle">
+  <calculation-step-layout v-else>
+    <template #step-info>
       <calculation-steps-info-view :current-step-idx="currentStepOrderNumber" :total-steps-count="stepsCount" />
-    </div>
+    </template>
 
-    <div class="calculation-view__component flex flex-1 flex-wrap justify-center">
-      <div class="calculation-view__component__wrapper">
-        <calculation-step-view
-          v-model:answer="answer"
-          v-model:sub-step-answer="subStepAnswer"
-          :step="currentSubStep || currentStep!"
-          :embedded-sub-step="embeddedSubStep"
-          @update:embedded-substep-answer="handleEmbeddedSubStepAnswer"
-        />
-      </div>
-    </div>
+    <template #step-view>
+      <calculation-step-view
+        v-if="visibleStep"
+        :step="visibleStep"
+        :answers-map="answersMap"
+        @update:answers-map="handleUpdateAnswersMap"
+      />
+    </template>
 
-    <calculation-steps-nav
-      class="calculation-view__navigation"
-      :current-step-idx="currentStepOrderNumber"
-      :total-steps-count="stepsCount"
-      :disabled="answer == null"
-      @next="handleGoToNextStep"
-      @prev="handleGoToPrevStep"
-    >
-      <template v-if="stepFromRoute && stepFromRoute.id !== summaryStep?.id" #default>
-        <div class="flex justify-between">
-          <n-button v-if="!currentSubStep" size="small" @click="handleGoToSummaryClick"> Отмена </n-button>
-          <n-button v-else size="small" @click="handleGoParentStepClick"> Назад </n-button>
-
-          <n-button
-            v-if="hasNotEmbeddedSubStep && !currentSubStep"
-            size="small"
-            type="primary"
-            @click="handleGoToEditSubStepClick"
-          >
-            Далее
-          </n-button>
-          <n-button v-else size="small" type="primary" @click="handleSaveClick"> Сохранить </n-button>
-        </div>
-      </template>
-    </calculation-steps-nav>
-  </div>
+    <template #navigation>
+      <calculation-step-edit-nav
+        v-if="isEditViewMode"
+        :has-next-step="!!hasNextStep"
+        :has-prev-step="!!hasPrevStep"
+        :submit-available="submitAvailable"
+        @cancel="handleEditViewCancel"
+        @save="handleEditViewSave"
+        @go:next="handleEditViewNextStep"
+        @go:prev="handleEditViewPrevStep"
+      />
+      <calculation-steps-nav
+        v-else
+        :current-step-idx="currentStepOrderNumber"
+        :total-steps-count="stepsCount"
+        :disabled="!hasNextStep && !submitAvailable"
+        @next="handleGoToNextStep"
+        @prev="handleGoToPrevStep"
+      />
+    </template>
+  </calculation-step-layout>
 </template>
 
 <script lang="ts" setup>
-import { getRouterService } from '@app/container';
-import { RouteNames } from '@app/router/routeNames';
 import CalculationStepView from '@app/views/calculation/CalculationStepView.vue';
 import { NButton, NH2, NSpin } from 'naive-ui';
 import CalculationStepsInfoView from '@app/views/calculation/CalculationStepsInfoView.vue';
 import CalculationStepsNav from '@app/views/calculation/CalculationStepsNav.vue';
 import { AnswerType } from '@app/stores/calculation/types';
 import { useCalculation } from '@app/compositions/calculation/useCalculation';
-import { useStepAnswer } from '@app/compositions/calculation/useStepAnswer';
-import { useSubStep } from '@app/compositions/calculation/useSubStep';
+import { useStepAnswersMap } from '@app/compositions/calculation/useStepAnswersMap';
 import { computed, onMounted, ref, watch } from 'vue';
-import { SubStepBoolean } from '@/common/types';
-
-const routerService = getRouterService();
+import { StepId } from '@/common/types';
+import CalculationStepLayout from '@app/views/calculation/CalculationStepLayout.vue';
+import { AnswersMap } from '@app/views/calculation/CalculationStepView.types';
+import { useCalculationViewNav } from '@app/compositions/calculation/useCalculationViewNav';
+import { getDefaultOptionId } from '@app/stores/calculation/helpers';
+import CalculationStepEditNav from '@app/views/calculation/CalculationStepEditNav.vue';
 
 const {
   currentStep,
-  currentSubStep,
   loading,
   notFound,
   error,
@@ -84,94 +75,92 @@ const {
   goToNextStep,
   goToPrevStep,
   setAnswerForStep,
-  stepFromRoute,
   stepsCount,
-  summaryStep,
+  isStep,
+  subStepForAnswer,
+  answerForStepId,
+  isEditMode,
+  setEditMode,
   setSummaryStep,
-  getAnswerForStep,
 } = useCalculation();
 
-const answer = useStepAnswer(currentStep);
-const { embeddedSubStep, subStepForAnswer } = useSubStep(currentStep, answer);
+const { initialAnswersMap } = useStepAnswersMap(currentStep);
 
-const subStepAnswer = ref<AnswerType | null>(null);
+const answersMap = ref<AnswersMap>(currentStep.value ? initialAnswersMap(currentStep.value!.id) : {});
 
-const hasNotEmbeddedSubStep = computed(
-  () =>
-    subStepForAnswer.value &&
-    (subStepForAnswer.value.type !== 'boolean' || !(subStepForAnswer.value as SubStepBoolean).embed)
+const isEditViewMode = computed(() => isEditMode.value);
+
+const currenStepId = computed(() => currentStep.value?.id || null);
+watch(
+  currenStepId,
+  (value) => {
+    if (value) {
+      answersMap.value = initialAnswersMap(value);
+    }
+  },
+  { immediate: true }
 );
-
-watch(embeddedSubStep, (value) => {
-  if (!value) {
-    subStepAnswer.value = null;
-  } else {
-    subStepAnswer.value = getAnswerForStep(value.id);
-  }
-});
-
-watch(currentSubStep, (value) => {
-  if (!value) {
-    subStepAnswer.value = null;
-  } else {
-    subStepAnswer.value = getAnswerForStep(value.id);
-  }
-});
+const { hasPrevStep, hasNextStep, submitAvailable, navigateToNextStep, navigateToPrevStep, visibleStep } =
+  useCalculationViewNav(currenStepId, answersMap);
 
 const handleGoToNextStep = () => {
-  setAnswerForStep(currentStep.value!.id, answer.value);
+  if (hasNextStep.value) {
+    navigateToNextStep();
+  } else if (submitAvailable) {
+    Object.entries(answersMap.value).forEach(([key, value]: [StepId, AnswerType | null]) => {
+      setAnswerForStep(key, value);
+    });
 
-  if (subStepAnswer.value != null) {
-    setAnswerForStep(embeddedSubStep.value?.id || currentSubStep.value!.id, subStepAnswer.value);
+    goToNextStep();
   }
+};
 
-  goToNextStep();
+const handleEditViewSave = () => {
+  Object.entries(answersMap.value).forEach(([key, value]: [StepId, AnswerType | null]) => {
+    setAnswerForStep(key, value);
+  });
+  setEditMode(false);
+  setSummaryStep();
+};
+
+const handleEditViewCancel = () => {
+  setEditMode(false);
+  setSummaryStep();
 };
 
 const handleGoToPrevStep = () => {
-  goToPrevStep();
-};
-
-const handleGoToSummaryClick = () => {
-  const { companyId, calculatorId } = routerService.getRouterParams() as Record<string, string>;
-  routerService.goTo(RouteNames.calculation, { companyId, calculatorId });
-};
-
-const handleEmbeddedSubStepAnswer = (answer: AnswerType | null) => {
-  subStepAnswer.value = answer;
-};
-
-const handleSaveClick = () => {
-  if (embeddedSubStep.value) {
-    setAnswerForStep(embeddedSubStep.value.id, subStepAnswer.value);
+  if (hasPrevStep.value) {
+    navigateToPrevStep();
+  } else {
+    goToPrevStep();
   }
-  setAnswerForStep(currentStep.value!.id, answer.value);
-  if (subStepAnswer.value != null) {
-    setAnswerForStep(embeddedSubStep.value?.id || currentSubStep.value!.id, subStepAnswer.value);
-  }
-
-  setSummaryStep();
-  const { companyId, calculatorId } = routerService.getRouterParams() as Record<string, string>;
-  routerService.goTo(RouteNames.calculation, { companyId, calculatorId });
 };
 
-const handleGoToEditSubStepClick = () => {
-  const { companyId, calculatorId } = routerService.getRouterParams() as Record<string, string>;
-  routerService.goTo(RouteNames.calculation, {
-    companyId,
-    calculatorId,
-    stepId: currentStep.value!.id,
-    subStepId: subStepForAnswer.value!.id,
-  });
+const handleEditViewNextStep = () => {
+  navigateToNextStep();
 };
 
-const handleGoParentStepClick = () => {
-  const { companyId, calculatorId } = routerService.getRouterParams() as Record<string, string>;
-  routerService.goTo(RouteNames.calculation, {
-    companyId,
-    calculatorId,
-    stepId: currentStep.value!.id,
+const handleEditViewPrevStep = () => {
+  navigateToPrevStep();
+};
+
+const handleUpdateAnswersMap = (newAnswersMap: AnswersMap) => {
+  // check if step changed
+  // in this case we need to reset sub-steps
+  const stepChanged = Object.keys(newAnswersMap).length === 1 && isStep(Object.keys(newAnswersMap)[0]);
+
+  const stepIds = Object.keys(newAnswersMap).filter(isStep);
+  stepIds.forEach((stepId) => {
+    const answer = newAnswersMap[stepId];
+    if (answer) {
+      const subStep = subStepForAnswer(stepId, answer);
+      if (subStep && newAnswersMap[subStep.id] == null) {
+        newAnswersMap[subStep.id] = answerForStepId(subStep.id) ?? getDefaultOptionId(subStep);
+      }
+    }
   });
+
+  answersMap.value = stepChanged ? newAnswersMap : { ...answersMap.value, ...newAnswersMap };
 };
 
 onMounted(() => {
@@ -180,28 +169,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.calculation-view {
-  &__component {
-    &__wrapper {
-      display: flex;
-      align-items: flex-start;
-      width: 100%;
-      margin-bottom: 48px;
-    }
-  }
-
-  &__navigation {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    z-index: 999;
-    padding: 16px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
-  }
-}
-
 .self-align-center {
   align-self: center;
 }
