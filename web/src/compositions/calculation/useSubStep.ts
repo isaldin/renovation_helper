@@ -1,7 +1,8 @@
 import { computed, Ref } from 'vue';
 import { SubStep } from '@/common/types';
-import { AnswerType, StepWithOptions } from '@app/stores/calculation/types';
+import { StepWithOptions } from '@app/stores/calculation/types';
 import { useCalculationStore } from '@app/stores/calculation';
+import { AnswerType } from '@/common/types/calculator';
 
 export const useSubStep = (step: Ref<StepWithOptions | SubStep | null>, answer: Ref<AnswerType | null>) => {
   const store = useCalculationStore();

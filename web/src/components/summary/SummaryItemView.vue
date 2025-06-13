@@ -14,12 +14,12 @@
 <script setup lang="ts">
 import { NIcon } from 'naive-ui';
 import { CreateOutline } from '@vicons/ionicons5';
-import { AnswerType } from '@app/stores/calculation/types';
 import { StepId, StepType, SubStep } from '@/common/types';
 import { computed, defineAsyncComponent } from 'vue';
 import { useCalculationStore } from '@app/stores/calculation';
 import { SummaryItemProps } from '@app/components/summary/summary.types';
 import { useCalculation } from '@app/compositions/calculation/useCalculation';
+import { AnswerType } from '@/common/types/calculator';
 
 const { step, answer } = defineProps<SummaryItemProps>();
 

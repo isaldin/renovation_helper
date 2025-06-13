@@ -17,13 +17,13 @@
 <script setup lang="ts">
 import RhAnswerSelect from '@app/components/RhAnswerSelect.vue';
 import { CalculationStepViewEmits, CalculationStepViewProps } from '@app/views/calculation/CalculationStepView.types';
-import { computed, ComputedRef, watch } from 'vue';
+import { computed, ComputedRef } from 'vue';
 import { useCalculationStore } from '@app/stores/calculation';
 import { useSubStep } from '@app/compositions/calculation/useSubStep';
 import { getDefaultOptionId, getOptionItems, isSubStepEmbedded } from '@app/stores/calculation/helpers';
 import { OptionItem } from '@/common/types';
-import { AnswerType } from '@app/stores/calculation/types';
 import RhBooleanInput from '@app/components/RhBooleanInput.vue';
+import { AnswerType } from '@/common/types/calculator';
 
 const { stepId, answersMap } = defineProps<CalculationStepViewProps>();
 

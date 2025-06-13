@@ -1,9 +1,10 @@
 import { useCalculationStore } from '@app/stores/calculation';
 import { computed, ComputedRef } from 'vue';
 import { EntityNotFoundError } from '@/common/errors';
-import { AnswerType, StepWithOptions } from '@app/stores/calculation/types';
+import { StepWithOptions } from '@app/stores/calculation/types';
 import { useRouteParams } from '@app/compositions/calculation/useRouteParams';
-import { Step, StepId, SubStep } from '@/common/types';
+import { Calculator, Step, StepId, SubStep } from '@/common/types';
+import { AnswerType } from '@/common/types/calculator';
 
 export const useCalculation = () => {
   const calculationStore = useCalculationStore();
@@ -102,6 +103,10 @@ export const useCalculation = () => {
 
   const setCurrentStep = (stepId: StepId) => (calculationStore.currentStepId = stepId);
 
+  const getCalculatorId = (): Calculator['id'] | null => calculationStore.calculatorId;
+
+  const getAnswers = (): Record<StepId, AnswerType | null> => calculationStore.answers;
+
   return {
     currentSubStep,
     loading,
@@ -127,5 +132,7 @@ export const useCalculation = () => {
     isEditMode,
     setEditMode,
     setCurrentStep,
+    getCalculatorId,
+    getAnswers,
   };
 };

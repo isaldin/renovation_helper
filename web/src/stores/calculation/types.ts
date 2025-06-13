@@ -1,7 +1,6 @@
 import { OptionItem, OptionList, Step, SubStep } from '@/common/types';
 import { Store } from 'pinia';
-
-export type AnswerType = OptionItem['id'] | OptionItem['id'][] | number | boolean;
+import { AnswerType } from '@/common/types/calculator';
 
 type CalculatorStoreLoadingStatus = 'loading' | 'ready' | 'error';
 

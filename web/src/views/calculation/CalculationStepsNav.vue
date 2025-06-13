@@ -6,7 +6,6 @@
         :class="{
           'justify-between': !isFirst,
           'justify-end': isFirst,
-          'justify-start': isLast,
         }"
       >
         <n-button v-if="!isFirst" tertiary circle>
@@ -16,13 +15,16 @@
             </n-icon>
           </template>
         </n-button>
-        <n-button v-if="!isLast" :disabled="disabled" tertiary circle>
-          <template #icon>
-            <n-icon @click="disabled ? void 0 : $emit('next')">
-              <arrow-forward-icon />
-            </n-icon>
-          </template>
-        </n-button>
+
+        <slot name="right-button">
+          <n-button v-if="!isLast" :disabled="disabled" tertiary circle>
+            <template #icon>
+              <n-icon @click="disabled ? void 0 : $emit('next')">
+                <arrow-forward-icon />
+              </n-icon>
+            </template>
+          </n-button>
+        </slot>
       </div>
     </slot>
   </div>

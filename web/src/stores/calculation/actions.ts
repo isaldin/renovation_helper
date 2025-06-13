@@ -1,7 +1,8 @@
-import { AnswerType, CalculationStore, CalculationStoreActions } from '@app/stores/calculation/types';
+import { CalculationStore, CalculationStoreActions } from '@app/stores/calculation/types';
 import { getCalculatorService } from '@app/container';
 import { getNextStepId, prepareSteps } from '@app/stores/calculation/helpers';
 import { Step } from '@/common/types';
+import { AnswerType } from '@/common/types/calculator';
 
 export const calculationStoreActions: CalculationStoreActions = {
   async fetchCalculator(this: CalculationStore, companyId: string, calculatorId: string) {

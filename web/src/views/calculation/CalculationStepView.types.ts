@@ -1,5 +1,5 @@
 import { StepId } from '@/common/types';
-import { AnswerType } from '@app/stores/calculation/types';
+import { AnswerType } from '@/common/types/calculator';
 
 export type AnswersMap = Record<StepId, AnswerType | null>;
 

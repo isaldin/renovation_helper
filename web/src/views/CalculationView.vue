@@ -44,7 +44,11 @@
         :disabled="!hasNextStep && !submitAvailable"
         @next="handleGoToNextStep"
         @prev="handleGoToPrevStep"
-      />
+      >
+        <template v-if="isSummaryStep" #right-button>
+          <n-button type="primary" @click="handleGetReportClick"> Получить расчет </n-button>
+        </template>
+      </calculation-steps-nav>
     </template>
   </calculation-step-layout>
 </template>
@@ -54,7 +58,6 @@ import CalculationStepView from '@app/views/calculation/CalculationStepView.vue'
 import { NButton, NH2, NSpin } from 'naive-ui';
 import CalculationStepsInfoView from '@app/views/calculation/CalculationStepsInfoView.vue';
 import CalculationStepsNav from '@app/views/calculation/CalculationStepsNav.vue';
-import { AnswerType } from '@app/stores/calculation/types';
 import { useCalculation } from '@app/compositions/calculation/useCalculation';
 import { useStepAnswersMap } from '@app/compositions/calculation/useStepAnswersMap';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -64,6 +67,8 @@ import { AnswersMap } from '@app/views/calculation/CalculationStepView.types';
 import { useCalculationViewNav } from '@app/compositions/calculation/useCalculationViewNav';
 import { getDefaultOptionId } from '@app/stores/calculation/helpers';
 import CalculationStepEditNav from '@app/views/calculation/CalculationStepEditNav.vue';
+import { AnswerType } from '@/common/types/calculator';
+import { useCalculatorResults } from '@app/compositions/calculation/useCalculatorResults';
 
 const {
   currentStep,
@@ -82,6 +87,9 @@ const {
   isEditMode,
   setEditMode,
   setSummaryStep,
+  summaryStep,
+  getCalculatorId,
+  getAnswers,
 } = useCalculation();
 
 const { initialAnswersMap } = useStepAnswersMap(currentStep);
@@ -102,6 +110,8 @@ watch(
 );
 const { hasPrevStep, hasNextStep, submitAvailable, navigateToNextStep, navigateToPrevStep, visibleStep } =
   useCalculationViewNav(currenStepId, answersMap);
+
+const isSummaryStep = computed(() => summaryStep.value?.id && currentStep.value?.id === summaryStep.value?.id);
 
 const handleGoToNextStep = () => {
   if (hasNextStep.value) {
@@ -161,6 +171,19 @@ const handleUpdateAnswersMap = (newAnswersMap: AnswersMap) => {
   });
 
   answersMap.value = stepChanged ? newAnswersMap : { ...answersMap.value, ...newAnswersMap };
+};
+
+const handleGetReportClick = async () => {
+  const calculatorId = getCalculatorId();
+  const answers = getAnswers();
+
+  const { saveCalculatorResults } = useCalculatorResults();
+
+  if (!calculatorId) {
+    return;
+  }
+
+  await saveCalculatorResults(calculatorId, answers);
 };
 
 onMounted(() => {

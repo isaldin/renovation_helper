@@ -6,11 +6,14 @@ export enum ServiceNames {
   CalculatorStepsRepository = 'CalculatorStepsRepository',
   CalculatorOptionsRepository = 'CalculatorOptionsRepository',
   CalculatorSubStepsRepository = 'CalculatorSubStepsRepository',
+  CalculatorResultsRepository = 'CalculatorResultsRepository',
+
   CalculatorService = 'CalculatorService',
   CalculatorSettingsService = 'CalculatorSettingsService',
   CalculatorStepsService = 'CalculatorStepsService',
   CalculatorOptionsService = 'CalculatorOptionsService',
   CalculatorSubStepsService = 'CalculatorSubStepsService',
+  CalculatorResultsService = 'CalculatorResultsService',
 
   // Web app service names
   WAFirebaseConfigService = 'WAFirebaseConfigService',
