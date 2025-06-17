@@ -20,7 +20,8 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@/common/*": ["./common/src/lib/*"]
+      "@common": ["common/dist/src/lib/index"],
+      "@common/*": ["common/dist/src/lib/*"]
     }
   }
 }

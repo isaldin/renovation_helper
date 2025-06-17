@@ -6,10 +6,15 @@
     "web:serve": "yarn nx serve web",
     "web:build": "yarn nx build web",
     "web:deploy": "yarn firebase deploy --only hosting",
+    "bot:serve": "yarn nx serve @renovation-helper/bot",
     "tools:create-calc": "yarn ts-node scripts/calc-create.ts"
   },
   "private": true,
   "dependencies": {
+    "@awalgawe/esbuild-typescript-paths-plugin": "^1.0.1",
+    "@esbuild-plugins/tsconfig-paths": "^0.1.2",
+    "@fastify/autoload": "~6.0.3",
+    "@fastify/sensible": "~6.0.2",
     "@nestjs/common": "^10.0.2",
     "@nestjs/core": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
@@ -19,6 +24,9 @@
     "@vicons/ionicons5": "^0.13.0",
     "autoprefixer": "^10.4.21",
     "axios": "^1.6.0",
+    "esbuild-ts-paths": "^1.1.3",
+    "fastify": "~5.2.1",
+    "fastify-plugin": "~5.0.1",
     "firebase": "^11.7.1",
     "firebase-tools": "^14.5.1",
     "naive-ui": "^2.41.0",
@@ -41,12 +49,12 @@
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
     "@nx/devkit": "21.0.3",
-    "@nx/esbuild": "21.0.3",
+    "@nx/esbuild": "21.2.0",
     "@nx/eslint": "21.0.3",
     "@nx/eslint-plugin": "21.0.3",
     "@nx/jest": "21.0.3",
-    "@nx/js": "21.1.2",
-    "@nx/node": "21.1.2",
+    "@nx/js": "21.2.0",
+    "@nx/node": "21.2.0",
     "@nx/playwright": "21.0.3",
     "@nx/vite": "21.0.3",
     "@nx/vue": "21.0.3",
@@ -98,6 +106,8 @@
     "libs",
     "tools",
     "calc-tools",
-    "calc-tools-e2e"
+    "calc-tools-e2e",
+    "backend-api",
+    "backend-api-e2e"
   ]
 }

@@ -15,8 +15,15 @@ export default defineConfig(() => ({
     ],
   },
   server: {
+    host: '0.0.0.0',
     port: 4200,
-    host: 'localhost',
+    strictPort: true,
+    cors: true,
+    open: false,
+    allowedHosts: true,
+    fs: {
+      allow: ['.'],
+    },
   },
   preview: {
     port: 4300,

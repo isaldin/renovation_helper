@@ -1,1 +1,2 @@
-export * from './serviceNames'
+export * from './serviceNames';
+export * from './container';

@@ -1,5 +1,10 @@
 # RenovationHelper
 
+## FRPC
+`frpc -c ~/.frp/frpc.toml`
+
+Check that in Nginx Proxy Manager redirection to right local server IP.
+
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
 ✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.

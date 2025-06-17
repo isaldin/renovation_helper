@@ -1,0 +1,60 @@
+{
+  "name": "@renovation-helper/backend-api",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "esbuildConfig": "backend-api/esbuild.config.cjs",
+          "platform": "node",
+          "outputPath": "backend-api/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "backend-api/src/main.ts",
+          "tsConfig": "backend-api/tsconfig.app.json",
+          "assets": [
+            "backend-api/src/assets"
+          ]
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@renovation-helper/backend-api:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@renovation-helper/backend-api:build:development"
+          },
+          "production": {
+            "buildTarget": "@renovation-helper/backend-api:build:production"
+          }
+        }
+      },
+      "test": {
+        "options": {
+          "passWithNoTests": true
+        }
+      }
+    }
+  }
+}

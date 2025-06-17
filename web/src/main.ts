@@ -2,9 +2,8 @@ import 'reflect-metadata';
 
 import './styles.scss';
 import { createApp } from 'vue';
-import { registerContainer } from '@/common/di/container';
+import { registerContainer, ServiceNames } from '@/common';
 import { container, DependencyContainer } from 'tsyringe';
-import { ServiceNames } from '@/common/di';
 import { firebaseServiceConfig } from './services/firebaseConfig.service';
 import { FirebaseService, FirebaseServiceConfig } from '@/common/services';
 import { AppInitService } from './services/appInit.service';
@@ -40,5 +39,13 @@ const startApp = async () => {
 
   app.mount('#root');
 };
+
+try {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  console.log(Telegram.WebApp);
+} catch {
+  //
+}
 
 startApp();

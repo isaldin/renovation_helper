@@ -41,7 +41,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["bot-e2e/**/*", "calc-tools-e2e/**/*"]
+      "exclude": ["bot-e2e/**/*", "calc-tools-e2e/**/*", "backend-api-e2e/**/*"]
     },
     {
       "plugin": "@nx/vite/plugin",

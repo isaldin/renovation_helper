@@ -11,6 +11,12 @@
     },
     {
       "path": "./common"
+    },
+    {
+      "path": "./backend-api-e2e"
+    },
+    {
+      "path": "./backend-api"
     }
   ]
 }

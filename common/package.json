@@ -2,20 +2,28 @@
   "name": "@/common",
   "version": "0.0.1",
   "private": true,
-  "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "development": "./src/index.ts",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
-  },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/src/lib/index.js",
+      "types": "./dist/src/lib/index.d.ts"
+    }
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "options": {
+          "outputPath": "common/dist",
+          "tsConfig": "common/tsconfig.lib.json",
+          "main": "common/src/lib/index.ts"
+        }
+      }
+    }
   }
 }

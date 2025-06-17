@@ -1,15 +1,21 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "rootDir": "src",
-    "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node"],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": false,
+    "module": "CommonJS",
+    "target": "es2022",
+    "moduleResolution": "node",
+    "rootDir": "src/lib",
+    "outDir": "dist/lib",
+    "esModuleInterop": false,
   },
-  "include": ["src/**/*.ts", "../common/src/**/*.ts"],
+  "include": ["src/lib"],
   "references": [],
   "exclude": [
     "vite.config.ts",
