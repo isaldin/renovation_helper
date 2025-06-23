@@ -11,6 +11,6 @@ export class CalculatorSettingsService {
   ) {}
 
   public async getByCalculatorId(calculatorId: string): Promise<CalculatorSettings | null> {
-    return this.settingsRepository.getByCalculatorId(calculatorId);
+    return this.settingsRepository.getAllForCalculator(calculatorId);
   }
 }

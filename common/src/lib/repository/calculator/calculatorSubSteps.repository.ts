@@ -1,19 +1,16 @@
 import { inject, injectable } from 'tsyringe';
 import { ServiceNames } from '../../di';
-import { FirebaseService } from '../../services';
-import { FirestoreRepository } from '../firestoreRepository';
+import { FirestoreRepository } from '../firebase/firestoreRepository';
 import { SubStep } from '../../types';
-import { collection, getDocs } from 'firebase/firestore';
+import { FirebaseStore } from '../firebase/firebaseStore';
 
 @injectable()
 export class CalculatorSubStepsRepository extends FirestoreRepository<SubStep> {
-  constructor(@inject(ServiceNames.FirebaseService) protected override readonly firebaseService: FirebaseService) {
-    super(firebaseService, 'substeps');
+  constructor(@inject(ServiceNames.FirebaseStore) protected override readonly firebaseStore: FirebaseStore) {
+    super(firebaseStore, 'substeps');
   }
 
-  async getAllForCalculator(calculatorId: string): Promise<SubStep[]> {
-    const col = collection(this.firebaseService.getStore(), `calculator/${calculatorId}/substeps`);
-    const snap = await getDocs(col);
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as SubStep));
+  public async getAllForCalculator(calculatorId: string): Promise<SubStep[]> {
+    return this.getAll(`calculator/${calculatorId}/substeps`);
   }
 }

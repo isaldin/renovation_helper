@@ -1,24 +1,17 @@
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 import { inject, injectable } from 'tsyringe';
-import { FirestoreRepository } from '../firestoreRepository';
+import { FirestoreRepository } from '../firebase/firestoreRepository';
 import { CalculatorSettings } from '../../types';
 import { ServiceNames } from '../../di';
-import { FirebaseService } from '../../services';
+import { FirebaseStore } from '../firebase/firebaseStore';
 
 @injectable()
 export class CalculatorSettingsRepository extends FirestoreRepository<CalculatorSettings> {
-  constructor(@inject(ServiceNames.FirebaseService) protected override readonly firebaseService: FirebaseService) {
-    super(firebaseService, 'settings');
+  constructor(@inject(ServiceNames.FirebaseStore) protected override readonly firebaseStore: FirebaseStore) {
+    super(firebaseStore, 'settings');
   }
 
-  public async getByCalculatorId(calculatorId: string): Promise<CalculatorSettings | null> {
-    const ref = collection(this.firebaseService.getStore(), `calculator/${calculatorId}/settings`);
-    const snap = await getDocs(ref);
-    return (snap.docs[0].data() as CalculatorSettings) || null;
-  }
-
-  public async save(companyId: string, version: string, data: CalculatorSettings): Promise<void> {
-    const ref = doc(this.firebaseService.getStore(), `calculator/${version}/settings`);
-    await setDoc(ref, data);
+  public async getAllForCalculator(calculatorId: string): Promise<CalculatorSettings | null> {
+    const settings = await this.getAll(`calculator/${calculatorId}/settings`);
+    return settings.length > 0 ? settings[0] : null;
   }
 }

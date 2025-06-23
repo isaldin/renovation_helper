@@ -11,6 +11,6 @@ export class CalculatorOptionsService {
   ) {}
 
   public getAll(calculatorId: string): Promise<OptionList[]> {
-    return this.calculatorOptionsRepository.getAll(calculatorId);
+    return this.calculatorOptionsRepository.getAllForCalculator(calculatorId);
   }
 }

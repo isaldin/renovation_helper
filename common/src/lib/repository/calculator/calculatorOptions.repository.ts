@@ -1,22 +1,16 @@
 import { inject, injectable } from 'tsyringe';
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 import { ServiceNames } from '../../di';
-import { FirebaseService } from '../../services';
 import { OptionList } from '../../types';
+import { FirebaseStore } from '../firebase/firebaseStore';
+import { FirestoreRepository } from '../firebase/firestoreRepository';
 
 @injectable()
-export class CalculatorOptionsRepository {
-  constructor(@inject(ServiceNames.FirebaseService) private readonly firebaseService: FirebaseService) {}
-
-  async getAll(calculatorId: string): Promise<OptionList[]> {
-    const col = collection(this.firebaseService.getStore(), `calculator/${calculatorId}/options`);
-    const snap = await getDocs(col);
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as OptionList));
+export class CalculatorOptionsRepository extends FirestoreRepository<OptionList> {
+  constructor(@inject(ServiceNames.FirebaseStore) protected override readonly firebaseStore: FirebaseStore) {
+    super(firebaseStore, 'options');
   }
 
-  async saveAll(companyId: string, version: string, optionLists: OptionList[]): Promise<void> {
-    const store = this.firebaseService.getStore();
-    const basePath = `calculator/${version}/options`;
-    await Promise.all(optionLists.map((list) => setDoc(doc(store, basePath, list.id), list)));
+  public async getAllForCalculator(calculatorId: string): Promise<OptionList[]> {
+    return this.getAll(`calculator/${calculatorId}/options`);
   }
 }

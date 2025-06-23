@@ -1,5 +1,6 @@
 export enum ServiceNames {
-  FirebaseService = 'FirebaseService',
+  FirebaseStore = 'FirebaseStore',
+  FirebaseClientConfigService = 'FirebaseClientConfigService',
 
   CalculatorRepository = 'CalculatorRepository',
   CalculatorSettingsRepository = 'CalculatorSettingsRepository',
@@ -16,7 +17,6 @@ export enum ServiceNames {
   CalculatorResultsService = 'CalculatorResultsService',
 
   // Web app service names
-  WAFirebaseConfigService = 'WAFirebaseConfigService',
   WAUserService = 'WAUserService',
   WAAppInitService = 'WAAppInitService',
   WARouterService = 'WARouterService',
