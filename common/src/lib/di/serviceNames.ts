@@ -21,4 +21,10 @@ export enum ServiceNames {
   WAAppInitService = 'WAAppInitService',
   WARouterService = 'WARouterService',
   WATelegramWebAppService = 'WATelegramWebAppService',
+  WAHttpService = 'WAHttpService',
+  WAAuthService = 'WAAuthService',
+  WAEnvironmentService = 'WAEnvironmentService',
+  BaseTgService = 'BaseTgService',
+  // Interceptors
+  WAUnauthInterceptor = 'WAUnauthInterceptor',
 }

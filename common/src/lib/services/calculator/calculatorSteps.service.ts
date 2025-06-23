@@ -10,7 +10,7 @@ export class CalculatorStepsService {
     protected readonly calculatorStepsRepository: CalculatorStepsRepository
   ) {}
 
-  public getAll(companyId: string, calculatorId: string): Promise<Step[]> {
-    return this.calculatorStepsRepository.getAllForCompanyAndCalculator(companyId, calculatorId);
+  public getAll(calculatorId: string): Promise<Step[]> {
+    return this.calculatorStepsRepository.getAllForCalculator(calculatorId);
   }
 }

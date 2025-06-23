@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import { collection, getDocs } from 'firebase/firestore';
+import { getDocs } from 'firebase/firestore';
 import { collectionGroup } from 'firebase/firestore/lite';
 import { FirestoreRepository } from '../firestoreRepository';
 import { Calculator } from '../../types';
@@ -10,42 +10,6 @@ import { FirebaseService } from '../../services';
 export class CalculatorRepository extends FirestoreRepository<Calculator> {
   constructor(@inject(ServiceNames.FirebaseService) protected override readonly firebaseService: FirebaseService) {
     super(firebaseService, 'calculator');
-  }
-
-  async getByCompanyAndVersion(
-    companyId: string,
-    version: string
-  ): Promise<Pick<Calculator, 'id' | 'version' | 'companyId'> | null> {
-    const ref = collection(this.firebaseService.getStore(), `companies/${companyId}/calculator`);
-    const snap = await getDocs(ref);
-
-    const match = snap.docs.find((doc) => doc.data().version === version);
-
-    return match
-      ? {
-          id: match.id,
-          version: match.data().version,
-          companyId: match.data().companyId,
-        }
-      : null;
-  }
-
-  async getByCompanyAndId(
-    companyId: string,
-    calculatorId: string
-  ): Promise<Pick<Calculator, 'id' | 'version' | 'companyId'> | null> {
-    const ref = collection(this.firebaseService.getStore(), `companies/${companyId}/calculator`);
-    const snap = await getDocs(ref);
-
-    const match = snap.docs.find((doc) => doc.id === calculatorId);
-
-    return match
-      ? {
-          id: match.id,
-          version: match.data().version,
-          companyId: match.data().companyId,
-        }
-      : null;
   }
 
   async getAllVersions(companyId: string): Promise<string[]> {

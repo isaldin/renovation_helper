@@ -10,7 +10,7 @@ export class CalculatorOptionsService {
     protected readonly calculatorOptionsRepository: CalculatorOptionsRepository
   ) {}
 
-  public getAll(companyId: string, calculatorId: string): Promise<OptionList[]> {
-    return this.calculatorOptionsRepository.getAll(companyId, calculatorId);
+  public getAll(calculatorId: string): Promise<OptionList[]> {
+    return this.calculatorOptionsRepository.getAll(calculatorId);
   }
 }

@@ -11,17 +11,14 @@ export class CalculatorSettingsRepository extends FirestoreRepository<Calculator
     super(firebaseService, 'settings');
   }
 
-  public async get(companyId: string, calculatorId: string): Promise<CalculatorSettings | null> {
-    const ref = collection(
-      this.firebaseService.getStore(),
-      `companies/${companyId}/calculator/${calculatorId}/settings`
-    );
+  public async getByCalculatorId(calculatorId: string): Promise<CalculatorSettings | null> {
+    const ref = collection(this.firebaseService.getStore(), `calculator/${calculatorId}/settings`);
     const snap = await getDocs(ref);
     return (snap.docs[0].data() as CalculatorSettings) || null;
   }
 
   public async save(companyId: string, version: string, data: CalculatorSettings): Promise<void> {
-    const ref = doc(this.firebaseService.getStore(), `companies/${companyId}/calculator/${version}/settings`);
+    const ref = doc(this.firebaseService.getStore(), `calculator/${version}/settings`);
     await setDoc(ref, data);
   }
 }

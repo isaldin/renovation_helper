@@ -10,7 +10,7 @@ export class CalculatorSettingsService {
     private readonly settingsRepository: CalculatorSettingsRepository
   ) {}
 
-  public async get(companyId: string, calculatorId: string): Promise<CalculatorSettings | null> {
-    return this.settingsRepository.get(companyId, calculatorId);
+  public async getByCalculatorId(calculatorId: string): Promise<CalculatorSettings | null> {
+    return this.settingsRepository.getByCalculatorId(calculatorId);
   }
 }

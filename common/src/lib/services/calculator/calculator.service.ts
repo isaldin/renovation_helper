@@ -18,21 +18,21 @@ export class CalculatorService {
     @inject(ServiceNames.CalculatorSubStepsService) private readonly subStepsService: CalculatorSubStepsService
   ) {}
 
-  public async getCalculator(companyId: string, calculatorId: string): Promise<Calculator> {
-    const calculator = await this.calculatorRepository.getByCompanyAndId(companyId, calculatorId);
+  public async getCalculator(calculatorId: string): Promise<Calculator> {
+    const calculator = await this.calculatorRepository.getById(calculatorId);
 
     if (!calculator) {
       throw new CalculatorNotFoundError();
     }
 
-    const settings = await this.settingsService.get(companyId, calculator.id);
+    const settings = await this.settingsService.getByCalculatorId(calculator.id);
     if (!settings) {
       throw new CalculatorSettingsNotFoundError();
     }
 
-    const steps = await this.stepsService.getAll(companyId, calculatorId);
-    const subSteps = await this.subStepsService.getAll(companyId, calculatorId);
-    const optionList = await this.optionsService.getAll(companyId, calculatorId);
+    const steps = await this.stepsService.getAll(calculatorId);
+    const subSteps = await this.subStepsService.getAll(calculatorId);
+    const optionList = await this.optionsService.getAll(calculatorId);
 
     return {
       ...calculator,

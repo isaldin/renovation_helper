@@ -11,11 +11,8 @@ export class CalculatorSubStepsRepository extends FirestoreRepository<SubStep> {
     super(firebaseService, 'substeps');
   }
 
-  async getAllForCompanyAndCalculator(companyId: string, calculatorId: string): Promise<SubStep[]> {
-    const col = collection(
-      this.firebaseService.getStore(),
-      `companies/${companyId}/calculator/${calculatorId}/substeps`
-    );
+  async getAllForCalculator(calculatorId: string): Promise<SubStep[]> {
+    const col = collection(this.firebaseService.getStore(), `calculator/${calculatorId}/substeps`);
     const snap = await getDocs(col);
     return snap.docs.map((d) => ({ id: d.id, ...d.data() } as SubStep));
   }

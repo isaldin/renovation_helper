@@ -10,7 +10,7 @@ export class CalculatorSubStepsService {
     private readonly calculatorSubStepsRepository: CalculatorSubStepsRepository
   ) {}
 
-  public getAll(companyId: string, calculatorId: string): Promise<SubStep[]> {
-    return this.calculatorSubStepsRepository.getAllForCompanyAndCalculator(companyId, calculatorId);
+  public getAll(calculatorId: string): Promise<SubStep[]> {
+    return this.calculatorSubStepsRepository.getAllForCalculator(calculatorId);
   }
 }
