@@ -24,4 +24,5 @@ export async function app(fastify: FastifyInstance, _opts: AppOptions) {
 
   fastify.register(routes.auth);
   fastify.register(routes.home);
+  fastify.register(routes.me);
 }
