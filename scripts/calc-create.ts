@@ -1,24 +1,24 @@
 import 'dotenv';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, addDoc, collection } from 'firebase/firestore';
-import { firebaseConfig } from './firebase-config';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 import type { Calculator, CalculatorSettings } from '@/common/types';
 import { steps, stepsOptions as options } from './data';
 import { subSteps } from './substep';
+import serviceAccountKey from './serviceAccountKey.json';
 
-const app = initializeApp(firebaseConfig);
-const store = getFirestore(app);
+initializeApp({
+  credential: cert(serviceAccountKey as any),
+});
+const store = getFirestore();
 
-export const createCalculator = async (companyId: string, version: string) => {
-  const basePath = `companies/${companyId}/calculator`;
+export const createCalculator = async (version: string) => {
+  const basePath = `calculator`;
 
-  const calc: Omit<Calculator, 'id' | 'settings' | 'steps' | 'subSteps' | 'optionList'> = {
+  const calc: Omit<Calculator, 'id' | 'settings' | 'steps' | 'subSteps' | 'optionList' | 'companyId'> = {
     version,
-    companyId,
   };
 
-  const ref = collection(store, basePath);
-  const calcRef = await addDoc(ref, calc);
+  const calcRef = await store.collection(basePath).add(calc);
 
   const calculatorId = calcRef.id;
 
@@ -31,24 +31,28 @@ export const createCalculator = async (companyId: string, version: string) => {
     updatedAt: new Date().toISOString(),
   };
 
-  await addDoc(collection(store, `${basePath}/${calculatorId}/settings`), settings);
+  await store.collection(`${basePath}/${calculatorId}/settings`).add(settings);
+  // await addDoc(collection(store, `${basePath}/${calculatorId}/settings`), settings);
 
   // steps
   for (const step of steps) {
-    await addDoc(collection(store, `${basePath}/${calculatorId}/steps`), step);
+    await store.collection(`${basePath}/${calculatorId}/steps`).add(step);
+    // await addDoc(collection(store, `${basePath}/${calculatorId}/steps`), step);
   }
 
   // options
   for (const list of Object.values(options)) {
-    await addDoc(collection(store, `${basePath}/${calculatorId}/options`), list);
+    await store.collection(`${basePath}/${calculatorId}/options`).add(list);
+    // await addDoc(collection(store, `${basePath}/${calculatorId}/options`), list);
   }
 
   // substeps
   for (const subStep of subSteps) {
-    await addDoc(collection(store, `${basePath}/${calculatorId}/substeps`), subStep);
+    await store.collection(`${basePath}/${calculatorId}/substeps`).add(subStep);
+    // await addDoc(collection(store, `${basePath}/${calculatorId}/substeps`), subStep);
   }
 
-  console.log(`✅ Calculator created for ${companyId}, version ${version}`);
+  console.log(`✅ Calculator created for with version ${version}`);
 };
 
-createCalculator('c1', '1').catch(console.error);
+createCalculator('1').catch(console.error);
