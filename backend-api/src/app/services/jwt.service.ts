@@ -1,0 +1,39 @@
+import { inject, injectable } from 'tsyringe';
+import { ServiceNames } from '@common';
+import { ConfigService } from './config.service.ts';
+import { sign as jwtSign, verify as jwtVerify } from 'jsonwebtoken';
+
+type JwtUserData = {
+  userId: string;
+  authDate: Date;
+  companyId: string;
+};
+
+type JwtPayload = {
+  sub: string; // userId
+  auth_date: string; // auth date in string format
+  companyId: string; // company that calculator belongs to
+};
+
+@injectable()
+export class JwtService {
+  constructor(@inject(ServiceNames.BAConfigService) private readonly configService: ConfigService) {}
+
+  public getToken(input: JwtUserData): string {
+    return jwtSign(
+      { sub: input.userId, auth_date: input.authDate.toString(), companyId: input.companyId } satisfies JwtPayload,
+      this.configService.jwtSecret,
+      { expiresIn: '1d' }
+    );
+  }
+
+  public parseToken(token: string): JwtUserData {
+    const payload = jwtVerify(token, this.configService.jwtSecret) as JwtPayload;
+    console.log('JWT payload:', payload);
+    return {
+      userId: payload.sub,
+      authDate: new Date(payload.auth_date),
+      companyId: payload.companyId,
+    } satisfies JwtUserData;
+  }
+}
