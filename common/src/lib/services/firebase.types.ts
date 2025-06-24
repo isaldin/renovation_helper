@@ -7,3 +7,7 @@ export type FirebaseServiceConfig = {
   appId: string;
   measurementId: string;
 };
+
+export interface FirebaseServiceAccountJsonProvider {
+  getServiceAccountJson: () => string;
+}

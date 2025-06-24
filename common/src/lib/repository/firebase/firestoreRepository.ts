@@ -1,15 +1,9 @@
 import { BaseRepository } from '../baseRepository';
-import { inject, injectable } from 'tsyringe';
-import { ServiceNames } from '../../di';
 import { MakeOptional } from '../../types';
 import { FirebaseStore } from './firebaseStore';
 
-@injectable()
 export class FirestoreRepository<T extends { id?: string }> implements BaseRepository<T> {
-  constructor(
-    @inject(ServiceNames.FirebaseStore) protected readonly firebaseStore: FirebaseStore,
-    private readonly collectionName: string
-  ) {}
+  constructor(protected readonly firebaseStore: FirebaseStore, private readonly collectionName: string) {}
 
   public getAll(collectionName?: string): Promise<T[]> {
     return this.firebaseStore.getDocs(collectionName || this.collectionName);

@@ -1,6 +1,7 @@
 export enum ServiceNames {
   FirebaseStore = 'FirebaseStore',
   FirebaseClientConfigService = 'FirebaseClientConfigService',
+  FirebaseServiceAccountJsonProvider = 'FirebaseServiceAccountJsonProvider',
 
   CalculatorRepository = 'CalculatorRepository',
   CalculatorSettingsRepository = 'CalculatorSettingsRepository',
@@ -24,7 +25,17 @@ export enum ServiceNames {
   WAHttpService = 'WAHttpService',
   WAAuthService = 'WAAuthService',
   WAEnvironmentService = 'WAEnvironmentService',
-  BaseTgService = 'BaseTgService',
   // Interceptors
   WAUnauthInterceptor = 'WAUnauthInterceptor',
+
+  // Backend API service names
+  BAConfigService = 'BAConfigService',
+  BAJwtService = 'BAJwtService',
+
+  // controllers
+  BAAuthController = 'BAAuthController',
+  BAMeController = 'BAMeController',
+
+  BADomainCalculatorMapRepository = 'BADomainCalculatorMapRepository',
+  BADomainCalculatorMapService = 'BADomainCalculatorMapService',
 }
