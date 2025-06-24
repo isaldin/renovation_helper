@@ -22,6 +22,10 @@
     "paths": {
       "@common": ["common/dist/src/lib/index"],
       "@common/*": ["common/dist/src/lib/*"]
-    }
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/telegram-webapps-types-new"
+    ]
   }
 }

@@ -48,5 +48,6 @@ vitest.config.*.timestamp*
 
 .env
 **/.env
+**/.env.telegram
 
 .firebase/
