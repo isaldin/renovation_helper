@@ -15,7 +15,7 @@
       "@common/*": ["../common/dist/src/lib/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.mts"],
+  "include": ["src/**/*.ts", "src/**/*.mts", "types"],
   "exclude": [
     "out-tsc",
     "dist",

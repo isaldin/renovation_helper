@@ -59,6 +59,7 @@ export class AuthController {
       userId: userId.toString(),
       authDate: authDate,
       companyId: domainMap.companyId,
+      calculatorId: domainMap.calculatorId.id,
     });
 
     reply

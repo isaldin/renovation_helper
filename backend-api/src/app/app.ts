@@ -5,6 +5,7 @@ import fastifyCookie from '@fastify/cookie';
 import { initializeContainer } from './container';
 import * as plugins from './plugins';
 import * as routes from './routes';
+import * as decorators from './decorators';
 
 export type AppOptions = {
   //
@@ -19,6 +20,9 @@ export async function app(fastify: FastifyInstance, _opts: AppOptions) {
   });
 
   fastify.register(fastifyCookie);
+
+  fastify.register(decorators.diContainerDecorator);
+  fastify.register(decorators.authGuardDecorator);
 
   fastify.register(plugins.sensible);
 

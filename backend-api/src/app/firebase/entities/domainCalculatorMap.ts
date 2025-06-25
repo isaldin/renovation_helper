@@ -1,6 +1,6 @@
 export interface DomainCalculatorMap {
   id: string;
   domain: string;
-  calculatorId: string;
+  calculatorId: { id: string };
   companyId: string;
 }
