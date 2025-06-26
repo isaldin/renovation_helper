@@ -1,27 +1,63 @@
-import { OptionList } from './options';
+import { z } from 'zod';
+import { optionItemSchema } from './options';
 
-export type StepId = string;
+export const stepIdSchema = z.string();
+export type StepId = z.infer<typeof stepIdSchema>;
 
-export type StepType = 'select' | 'checkbox' | 'number' | 'boolean' | 'calc';
+export const stepTypeSchema = z.enum([
+  'select',
+  'checkbox',
+  'number',
+  'boolean',
+  'calc',
+  //
+]);
+export type StepType = z.infer<typeof stepTypeSchema>;
 
-export type StepCommon = {
-  id: StepId;
-  title: string;
-};
+export const stepCommonSchema = z.object({
+  id: stepIdSchema,
+  title: z.string(),
+});
+export type StepCommon = z.infer<typeof stepCommonSchema>;
 
-type StepWithNextStep = StepCommon & { nextStep: StepCommon['id'] };
+export const stepWithNextStepSchema = stepCommonSchema.extend({
+  nextStep: stepCommonSchema.shape.id,
+});
+export type StepWithNextStep = z.infer<typeof stepWithNextStepSchema>;
 
-export type StepWithOptionsFrom = StepWithNextStep & {
-  type: 'select' | 'checkbox';
-  optionsFrom?: OptionList['id'];
-  multiple?: boolean;
-  defaultValue?: string | string[];
-};
+export const stepWithOptionsFromSchema = stepWithNextStepSchema.extend({
+  type: z.enum(['select', 'checkbox']),
+  optionsFrom: optionItemSchema.shape.id,
+  multiple: z.boolean().optional(),
+  defaultValue: z
+    .union([
+      z.string(),
+      z.array(z.string()),
+      //
+    ])
+    .optional(),
+});
+export type StepWithOptionsFrom = z.infer<typeof stepWithOptionsFromSchema>;
 
-export type StepWithNumber = StepWithNextStep & { type: 'number' };
+export const stepWithNumberSchema = stepWithNextStepSchema.extend({
+  type: z.literal('number'),
+});
+export type StepWithNumber = z.infer<typeof stepWithNumberSchema>;
 
-export type StepWithBoolean = StepWithNextStep & { type: 'boolean' };
+export const stepWithBooleanSchema = stepWithNextStepSchema.extend({
+  type: z.literal('boolean'),
+});
+export type StepWithBoolean = z.infer<typeof stepWithBooleanSchema>;
 
-type StepCalc = StepCommon & { type: 'calc' };
+export const stepCalcSchema = stepCommonSchema.extend({
+  type: z.literal('calc'),
+});
+export type StepCalc = z.infer<typeof stepCalcSchema>;
 
-export type Step = StepWithOptionsFrom | StepWithBoolean | StepWithNumber | StepCalc;
+export const stepSchema = z.discriminatedUnion('type', [
+  stepWithOptionsFromSchema,
+  stepWithBooleanSchema,
+  stepWithNumberSchema,
+  stepCalcSchema,
+]);
+export type Step = z.infer<typeof stepSchema>;

@@ -1,14 +1,16 @@
-import { CalculatorSettings } from './settings';
-import { Step } from './steps';
-import { OptionList } from './options';
-import { SubStep } from './subStep';
+import { z } from 'zod';
+import { calculatorSettingsSchema } from './settings';
+import { stepSchema } from './steps';
+import { optionListSchema } from './options';
+import { subStepSchema } from './subStep';
 
-export interface Calculator {
-  id: string;
-  version: string;
-  companyId: string;
-  settings: CalculatorSettings;
-  steps: Step[];
-  subSteps: SubStep[];
-  optionList: OptionList[];
-}
+export const calculatorSchema = z.object({
+  id: z.string(),
+  version: z.string(),
+  companyId: z.string(),
+  settings: calculatorSettingsSchema,
+  steps: z.array(stepSchema),
+  subSteps: z.array(subStepSchema),
+  optionList: z.array(optionListSchema),
+});
+export type Calculator = z.infer<typeof calculatorSchema>;

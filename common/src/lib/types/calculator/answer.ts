@@ -1,3 +1,12 @@
-import { OptionItem } from './options';
+import { z } from 'zod';
+import { optionItemSchema } from './options';
 
-export type AnswerType = OptionItem['id'] | OptionItem['id'][] | number | boolean;
+export const answerSchema = z.union([
+  optionItemSchema.shape.id,
+  z.array(optionItemSchema.shape.id),
+  z.number(),
+  z.boolean(),
+  //
+]);
+
+export type AnswerType = z.infer<typeof answerSchema>;

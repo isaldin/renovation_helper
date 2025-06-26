@@ -1,13 +1,18 @@
-export interface OptionItem {
-  id: string;
-  title: string;
-  price?: number;
-  pricePerM2?: number;
-  description?: string;
-  images?: string[];
-}
+import { z } from 'zod';
 
-export interface OptionList {
-  id: string;
-  options: OptionItem[];
-}
+export const optionItemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  price: z.number().optional(),
+  pricePerM2: z.number().optional(),
+  description: z.string().optional(),
+  images: z.array(z.string()).optional(),
+});
+
+export type OptionItem = z.infer<typeof optionItemSchema>;
+
+export const optionListSchema = z.object({
+  id: z.string(),
+  options: z.array(optionItemSchema),
+});
+export type OptionList = z.infer<typeof optionListSchema>;
