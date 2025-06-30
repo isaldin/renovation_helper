@@ -27,6 +27,7 @@ export enum ServiceNames {
   WAEnvironmentService = 'WAEnvironmentService',
   WAMeService = 'WAMeService',
   WAAppStateService = 'WAAppStateService',
+  WAHttpCalculationResultsService = 'WAHttpCalculationResultsService',
   // Interceptors
   WAUnauthInterceptor = 'WAUnauthInterceptor',
 
@@ -36,6 +37,7 @@ export enum ServiceNames {
   // controllers
   BAAuthController = 'BAAuthController',
   BAMeController = 'BAMeController',
+  BACalculationResultsController = 'BACalculationResultsController',
   // repositories
   BADomainCalculatorMapRepository = 'BADomainCalculatorMapRepository',
   // services
