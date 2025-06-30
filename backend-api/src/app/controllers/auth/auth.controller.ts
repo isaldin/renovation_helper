@@ -1,23 +1,19 @@
 import { injectable, inject } from 'tsyringe';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply } from 'fastify';
 import { isValid as isValidFn } from '@telegram-apps/init-data-node';
 import { parse as parseFn } from '@telegram-apps/init-data-node';
 import { ServiceNames } from '@common';
-import { ConfigService } from '../services/config.service';
-import { JwtService } from '../services/jwt.service';
-import { DomainCalculatorMapService } from '../firebase/services/domainCalculatorMap.service';
-
-type TelegramAuthRequest = FastifyRequest<{
-  Body: {
-    initData: string;
-  };
-}>;
+import { ConfigService } from '../../services/config.service.ts';
+import { JwtService } from '../../services/jwt.service.ts';
+import { DomainCalculatorMapService } from '../../firebase/services/domainCalculatorMap.service.ts';
+import { TelegramAuthRequest } from './auth.controller.types.ts';
+import { BaseAuthController } from './auth.controller.base.ts';
 
 const INVALID_AUTH_ERROR_STRING = 'Invalid auth data. Please try again.';
 const COMPANY_ID_NOT_FOUND_ERROR_STRING = 'Company ID not found for the domain.';
 
 @injectable()
-export class AuthController {
+export class AuthController implements BaseAuthController {
   constructor(
     @inject(ServiceNames.BAConfigService) private readonly configService: ConfigService,
     @inject(ServiceNames.BAJwtService) private readonly jwtService: JwtService,

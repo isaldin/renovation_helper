@@ -6,12 +6,15 @@ import { FirebaseStore } from '@common/repository/firebase/firebaseStore';
 import { AdminFirebaseStore } from '@common/repository/firebase/adminFirebaseStore';
 import { DomainCalculatorMapRepository } from '../firebase/repositories/domainCalculatorMap.repository';
 import { DomainCalculatorMapService } from '../firebase/services/domainCalculatorMap.service';
-import { AuthController } from '../controllers/auth.controller';
 import { ConfigService } from '../services/config.service';
 import { JwtService } from '../services/jwt.service';
 import { MeController } from '../controllers/me.controller';
+import { getAuthControllerClass } from '../controllers/auth';
+import { BaseAuthController } from '../controllers/auth/auth.controller.base.ts';
 
-export const initContainer = () => {
+export const initContainer = async () => {
+  const AuthController = await getAuthControllerClass();
+
   registerContainer((container: DependencyContainer) => {
     container.registerSingleton<ConfigService>(ServiceNames.BAConfigService, ConfigService);
 
@@ -32,7 +35,8 @@ export const initContainer = () => {
       DomainCalculatorMapService
     );
 
-    container.registerSingleton<AuthController>(ServiceNames.BAAuthController, AuthController);
+    container.registerSingleton<BaseAuthController>(ServiceNames.BAAuthController, AuthController);
+
     container.registerSingleton<MeController>(ServiceNames.BAMeController, MeController);
   });
 };

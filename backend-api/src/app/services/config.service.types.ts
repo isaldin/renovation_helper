@@ -1,5 +1,6 @@
 export interface BackendConfig {
   isDev: boolean;
+  isTelegramMode: boolean;
 
   host: string;
   port: number;

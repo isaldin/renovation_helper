@@ -8,6 +8,8 @@ export class ConfigService implements BackendConfig {
   constructor() {
     this.config = {
       isDev: process.env.NODE_ENV !== 'production',
+      isTelegramMode: process.env.TELEGRAM_MODE === 'true' && process.env.NODE_ENV !== 'production',
+
       host: process.env.HOST || 'localhost',
       port: parseInt(process.env.PORT || '3000', 10),
       useHttps: process.env.BACKEND_HTTPS === 'true',
@@ -43,5 +45,9 @@ export class ConfigService implements BackendConfig {
 
   public get authCookieDomain(): string {
     return this.config.authCookieDomain;
+  }
+
+  public get isTelegramMode(): boolean {
+    return this.config.isTelegramMode;
   }
 }
