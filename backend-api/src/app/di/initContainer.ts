@@ -8,6 +8,7 @@ import { DomainCalculatorMapRepository } from '../firebase/repositories/domainCa
 import { DomainCalculatorMapService } from '../firebase/services/domainCalculatorMap.service';
 import { ConfigService } from '../services/config.service';
 import { JwtService } from '../services/jwt.service';
+import { CalculationResultsController } from '../controllers/calculationResults.controller';
 import { MeController } from '../controllers/me.controller';
 import { getAuthControllerClass } from '../controllers/auth';
 import { BaseAuthController } from '../controllers/auth/auth.controller.base.ts';
@@ -38,5 +39,9 @@ export const initContainer = async () => {
     container.registerSingleton<BaseAuthController>(ServiceNames.BAAuthController, AuthController);
 
     container.registerSingleton<MeController>(ServiceNames.BAMeController, MeController);
+    container.registerSingleton<CalculationResultsController>(
+      ServiceNames.BACalculationResultsController,
+      CalculationResultsController
+    );
   });
 };
