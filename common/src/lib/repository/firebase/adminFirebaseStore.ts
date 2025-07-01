@@ -20,8 +20,9 @@ export class AdminFirebaseStore implements FirebaseStore {
     this.store = getFirestore();
   }
 
-  public createDoc<T extends Record<string, unknown>>(collectionName: string, data: T): Promise<string> {
-    return Promise.resolve('');
+  public async createDoc<T extends Record<string, unknown>>(collectionName: string, data: T): Promise<string> {
+    const docRef = await this.store.collection(collectionName).add(data);
+    return docRef.id;
   }
 
   public delete(collectionName: string, id: string): Promise<void> {
@@ -52,11 +53,11 @@ export class AdminFirebaseStore implements FirebaseStore {
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as T));
   }
 
-  public updateDoc<T extends Record<string, unknown>>(
+  public async updateDoc<T extends Record<string, unknown>>(
     collectionName: string,
     id: string,
     data: Partial<T>
   ): Promise<void> {
-    return Promise.resolve(undefined);
+    await this.store.collection(collectionName).doc(id).update(data);
   }
 }

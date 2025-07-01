@@ -6,4 +6,5 @@ export type CalculatorResults = {
   userId: string;
   results: Record<string, AnswerType | null>;
   createdAt: string;
+  updatedAt: string;
 };
