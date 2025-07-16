@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{reportInfo.title}} - Renovation Calculator Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .company-info {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        .company-info h2 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .company-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .company-item strong {
+            color: #666;
+            font-size: 0.9em;
+            display: block;
+        }
+
+        .company-item span {
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section-title {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        .options-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .options-table th {
+            background: #4a90e2;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .options-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .options-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .question {
+            font-style: italic;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .answer {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .total-section {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .total-label {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .total-amount {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .total-note {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            color: #666;
+        }
+
+        .footer p {
+            margin-bottom: 5px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🧾 Калькулятор ремонта</h1>
+            <p class="subtitle">Смета на ремонтные работы</p>
+        </div>
+
+        <!-- Company Information -->
+        <div class="company-info">
+            <h2>Информация о компании</h2>
+            <div class="company-grid">
+                <div class="company-item">
+                    <strong>Компания:</strong>
+                    <span>{{companyInfo.name}}</span>
+                </div>
+                <div class="company-item">
+                    <strong>Телефон:</strong>
+                    <span>{{companyInfo.phone}}</span>
+                </div>
+                <div class="company-item">
+                    <strong>Email:</strong>
+                    <span>{{companyInfo.email}}</span>
+                </div>
+                <div class="company-item">
+                    <strong>Дата расчета:</strong>
+                    <span>{{reportInfo.date}}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2 class="section-title">Выбранные опции</h2>
+            
+            <table class="options-table">
+                <thead>
+                    <tr>
+                        <th>Опция</th>
+                        <th>Выбор</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each options}}
+                    <tr>
+                        <td class="question">{{this.question}}</td>
+                        <td class="answer">{{this.answer}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+
+            <!-- Total Price Section -->
+            <div class="total-section">
+                <div class="total-label">💰 Итоговая стоимость:</div>
+                <div class="total-amount">{{totalPrice}} {{currency}}</div>
+                <div class="total-note">Включает материалы и работы</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Примечание:</strong> Стоимость действительна в течение 30 дней</p>
+            <p>Для уточнения деталей обращайтесь по указанным контактам</p>
+            <p>Сгенерировано: {{reportInfo.date}}</p>
+        </div>
+    </div>
+</body>
+</html>

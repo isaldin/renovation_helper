@@ -21,11 +21,9 @@
     "baseUrl": ".",
     "paths": {
       "@common": ["common/dist/src/lib/index"],
-      "@common/*": ["common/dist/src/lib/*"]
+      "@common/*": ["common/dist/src/lib/*"],
+      "@renovation-helper/pdf-worker-types": ["libs/pdf-worker-types/dist/index"]
     },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/telegram-webapps-types-new"
-    ]
+    "typeRoots": ["./node_modules/@types", "./node_modules/telegram-webapps-types-new"]
   }
 }

@@ -1,0 +1,59 @@
+services:
+  # Redis for Bull Queue
+  redis:
+    image: redis:7-alpine
+    container_name: renovation-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # PDF Worker Service
+  pdf-worker:
+    build:
+      context: .
+      dockerfile: pdf-worker/Dockerfile.dev
+    container_name: renovation-pdf-worker-dev
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - WORKER_CONCURRENCY=2
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/pdf-worker/node_modules
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Commander (optional GUI for Redis)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: renovation-redis-commander-dev
+    hostname: redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    profiles:
+      - debug
+
+volumes:
+  redis_data:
+    driver: local

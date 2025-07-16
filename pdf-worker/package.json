@@ -1,0 +1,66 @@
+{
+  "name": "@renovation-helper/pdf-worker",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "pdf-worker/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "pdf-worker/src/main.ts",
+          "tsConfig": "pdf-worker/tsconfig.app.json",
+          "assets": [
+            "pdf-worker/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@renovation-helper/pdf-worker:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@renovation-helper/pdf-worker:build:development"
+          },
+          "production": {
+            "buildTarget": "@renovation-helper/pdf-worker:build:production"
+          }
+        }
+      }
+    }
+  }
+}

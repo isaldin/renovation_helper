@@ -1,0 +1,47 @@
+# Development Dockerfile for PDF Worker
+FROM node:20-alpine
+
+# Install necessary packages for Puppeteer and Chrome
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    dumb-init
+
+# Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+COPY package.json yarn.lock ./
+COPY pdf-worker/package.json ./pdf-worker/
+
+# Install dependencies
+RUN yarn install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S worker -u 1001
+
+# Change ownership of the app directory
+RUN chown -R worker:nodejs /app
+USER worker
+
+# Expose port (if needed for health checks)
+EXPOSE 3000
+
+# Use dumb-init to handle signals
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the development server with hot reload
+CMD ["yarn", "nx", "serve", "pdf-worker"]

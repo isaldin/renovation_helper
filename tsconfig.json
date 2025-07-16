@@ -13,10 +13,13 @@
       "path": "./common"
     },
     {
-      "path": "./backend-api-e2e"
+      "path": "./backend-api"
     },
     {
-      "path": "./backend-api"
+      "path": "./pdf-worker"
+    },
+    {
+      "path": "./libs/pdf-worker-types"
     }
   ]
 }
