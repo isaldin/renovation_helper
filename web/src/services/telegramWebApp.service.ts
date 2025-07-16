@@ -1,21 +1,21 @@
 import { injectable } from 'tsyringe';
-import { TelegramWebAppValueKey, telegramWebAppValues } from '@app/services/telegramWebApp.service.const';
+import { TelegramWebAppInitData } from '@app/types';
 
 @injectable()
 export class TelegramWebAppService {
-  public getValue(key: TelegramWebAppValueKey): string | undefined {
-    return {
-      calculatorId: 'MLyNIoycZUT0qre0adhV',
-      companyId: 'c1',
-      userId: 'u1',
-    }[key];
+  public expandApp() {
+    try {
+      window.Telegram.WebApp.expand();
+    } catch {
+      console.log('Telegram.WebApp is not available');
+    }
   }
 
-  public getUserId(): string | undefined {
-    return this.getValue(telegramWebAppValues.userId);
-  }
+  public getInitData(): TelegramWebAppInitData {
+    if (import.meta.env.VITE_TELEGRAM_MODE !== 'true') {
+      return '';
+    }
 
-  public getCalculatorId(): string | undefined {
-    return this.getValue(telegramWebAppValues.CalculatorId);
+    return Telegram.WebApp.initData;
   }
 }

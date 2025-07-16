@@ -5,26 +5,26 @@ import { routes } from '@app/router/routes';
 
 @injectable()
 export class RouterService {
-  private _router: Router | null = null;
+  private readonly _router: Router;
+
+  constructor() {
+    this._router = this.createRouter();
+  }
 
   public get router(): Router {
-    if (!this._router) {
-      this._router = this.createRouter();
-    }
-
     return this._router;
   }
 
   public getRouterParams(): Record<string, unknown> {
-    return this._router!.currentRoute.value.params || {};
+    return this.router.currentRoute.value.params || {};
   }
 
   public getCurrentRoute() {
-    return this._router!.currentRoute.value;
+    return this.router.currentRoute.value;
   }
 
   public goTo(routeName: RouteNames, params?: RouteParamsRawGeneric) {
-    this._router?.push({ name: routeName, params });
+    return this.router.push({ name: routeName, params });
   }
 
   private createRouter(): Router {

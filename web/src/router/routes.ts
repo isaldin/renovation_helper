@@ -1,6 +1,7 @@
 import { RouteRecordRaw } from 'vue-router';
 import { RouteNames } from '@app/router/routeNames';
 import HomeView from '@app/views/HomeView.vue';
+import CalculationView from '@app/views/CalculationView.vue';
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -9,8 +10,23 @@ export const routes: RouteRecordRaw[] = [
     component: HomeView,
   },
   {
-    path: '/calculation/:companyId?/:calculatorId?/:stepId?/:subStepId?',
+    path: '/calculation/:calculatorId?',
     name: RouteNames.calculation,
-    component: () => import('../views/CalculationView.vue'),
+    component: CalculationView,
+  },
+  {
+    path: '/pages',
+    children: [
+      {
+        path: 'unauth',
+        name: RouteNames.unauth,
+        component: () => import('../views/unauth-page/UnauthorizedPage.vue'),
+      },
+      {
+        path: 'error',
+        name: RouteNames.error,
+        component: () => import('../views/error-page/ErrorPage.vue'),
+      },
+    ],
   },
 ];
