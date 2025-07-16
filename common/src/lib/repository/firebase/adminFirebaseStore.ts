@@ -29,8 +29,14 @@ export class AdminFirebaseStore implements FirebaseStore {
     return Promise.resolve(undefined);
   }
 
-  public getDocById<T>(collectionName: string, id: string): Promise<T | null> {
-    return Promise.resolve(null);
+  public async getDocById<T>(collectionName: string, id: string): Promise<T | null> {
+    const doc = await this.store.collection(collectionName).doc(id).get();
+
+    if (!doc.exists) {
+      return null;
+    }
+
+    return { id: doc.id, ...doc.data() } as T;
   }
 
   public async getDocs<T>(collectionName: string): Promise<T[]> {
