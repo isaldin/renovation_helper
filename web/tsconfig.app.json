@@ -3,7 +3,11 @@
   "compilerOptions": {
     "lib": ["es2022", "dom"],
     "outDir": "dist",
-    "types": ["vite/client"],
+    "types": [
+      "vite/client",
+      "./node_modules/@types",
+      "./node_modules/telegram-webapps-types-new"
+    ],
     "rootDir": "src",
     "jsx": "preserve",
     "jsxImportSource": "vue",
