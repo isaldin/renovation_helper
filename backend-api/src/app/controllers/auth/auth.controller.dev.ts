@@ -29,7 +29,7 @@ export class DevAuthController implements BaseAuthController {
     }
 
     const token = this.jwtService.getToken({
-      userId: 'dev-user-id',
+      userId: '910762709',
       authDate: new Date(),
       companyId: domainMap.companyId,
       calculatorId: domainMap.calculatorId.id,
