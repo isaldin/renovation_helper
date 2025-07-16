@@ -36,10 +36,12 @@ export enum ServiceNames {
   // Backend API service names
   BAConfigService = 'BAConfigService',
   BAJwtService = 'BAJwtService',
+  BAPdfQueueService = 'BAPdfQueueService',
   // controllers
   BAAuthController = 'BAAuthController',
   BAMeController = 'BAMeController',
   BACalculationResultsController = 'BACalculationResultsController',
+  BAReportController = 'BAReportController',
   // repositories
   BADomainCalculatorMapRepository = 'BADomainCalculatorMapRepository',
   // services

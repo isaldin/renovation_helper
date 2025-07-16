@@ -11,7 +11,11 @@ import { JwtService } from '../services/jwt.service';
 import { CalculationResultsController } from '../controllers/calculationResults.controller';
 import { MeController } from '../controllers/me.controller';
 import { getAuthControllerClass } from '../controllers/auth';
-import { BaseAuthController } from '../controllers/auth/auth.controller.base.ts';
+import { BaseAuthController } from '../controllers/auth/auth.controller.base';
+import { ReportController } from '../controllers/report/report.controller';
+import { CompanyService } from '@common';
+import { CompanyRepository } from '@common/repository/company/company.repository';
+import { PdfQueueService } from '../services/pdf-queue.service';
 
 export const initContainer = async () => {
   const AuthController = await getAuthControllerClass();
@@ -36,6 +40,9 @@ export const initContainer = async () => {
       DomainCalculatorMapService
     );
 
+    container.registerSingleton<CompanyRepository>(ServiceNames.CompanyRepository, CompanyRepository);
+    container.registerSingleton<CompanyService>(ServiceNames.CompanyService, CompanyService);
+
     container.registerSingleton<BaseAuthController>(ServiceNames.BAAuthController, AuthController);
 
     container.registerSingleton<MeController>(ServiceNames.BAMeController, MeController);
@@ -43,5 +50,8 @@ export const initContainer = async () => {
       ServiceNames.BACalculationResultsController,
       CalculationResultsController
     );
+    container.registerSingleton<ReportController>(ServiceNames.BAReportController, ReportController);
+
+    container.registerSingleton<PdfQueueService>(ServiceNames.BAPdfQueueService, PdfQueueService);
   });
 };

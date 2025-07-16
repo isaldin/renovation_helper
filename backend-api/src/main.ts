@@ -14,7 +14,16 @@ const start = async () => {
   const useHttps = process.env.BACKEND_HTTPS === 'true';
 
   const fastifyOptions: FastifyHttpsOptions<https.Server> | FastifyHttpOptions<http.Server> = {
-    logger: true,
+    logger: {
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+          translateTime: 'yyyy-mm-dd HH:MM:ss',
+          ignore: 'pid,hostname',
+        },
+      },
+    },
   };
 
   if (process.env.NODE_ENV === 'development' && useHttps) {
