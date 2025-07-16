@@ -9,6 +9,7 @@ export enum ServiceNames {
   CalculatorOptionsRepository = 'CalculatorOptionsRepository',
   CalculatorSubStepsRepository = 'CalculatorSubStepsRepository',
   CalculatorResultsRepository = 'CalculatorResultsRepository',
+  CompanyRepository = 'CompanyRepository',
 
   CalculatorService = 'CalculatorService',
   CalculatorSettingsService = 'CalculatorSettingsService',
@@ -16,6 +17,7 @@ export enum ServiceNames {
   CalculatorOptionsService = 'CalculatorOptionsService',
   CalculatorSubStepsService = 'CalculatorSubStepsService',
   CalculatorResultsService = 'CalculatorResultsService',
+  CompanyService = 'CompanyService',
 
   // Web app service names
   WAUserService = 'WAUserService',
