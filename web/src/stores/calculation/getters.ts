@@ -1,5 +1,5 @@
+import { AnswerType } from '@/common/types/calculator';
 import {
-  AnswerType,
   CalculationStore,
   CalculationStoreGetters,
   CalculationStoreState,

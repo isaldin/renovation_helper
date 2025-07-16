@@ -5,11 +5,11 @@ import { Step } from '@/common/types';
 import { AnswerType } from '@/common/types/calculator';
 
 export const calculationStoreActions: CalculationStoreActions = {
-  async fetchCalculator(this: CalculationStore, companyId: string, calculatorId: string) {
+  async fetchCalculator(this: CalculationStore, calculatorId: string) {
     this.status = 'loading';
     this.calculatorId = calculatorId;
     try {
-      const calculator = await getCalculatorService().getCalculator(companyId, calculatorId);
+      const calculator = await getCalculatorService().getCalculator(calculatorId);
 
       this.steps = prepareSteps(calculator.steps, calculator.optionList);
       this.subSteps = calculator.subSteps;

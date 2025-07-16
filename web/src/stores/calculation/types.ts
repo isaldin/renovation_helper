@@ -2,6 +2,8 @@ import { OptionItem, OptionList, Step, SubStep } from '@/common/types';
 import { Store } from 'pinia';
 import { AnswerType } from '@/common/types/calculator';
 
+export const CALCULATION_STORE_NAME = 'calculation';
+
 type CalculatorStoreLoadingStatus = 'loading' | 'ready' | 'error';
 
 export type StepWithOptions = Omit<Step, 'optionsFrom'> & {
@@ -23,7 +25,7 @@ export type CalculationStoreState = {
 };
 
 export type CalculationStoreActions = {
-  fetchCalculator: (companyId: string, calculatorId: string) => Promise<void>;
+  fetchCalculator: (calculatorId: string) => Promise<void>;
   goToNextStep: () => void;
   goToPrevStep: () => void;
   goToStep(stepId: Step['id']): void;
@@ -43,7 +45,7 @@ export type CalculationStoreGetters = {
 };
 
 export type CalculationStore = Store<
-  'calculation',
+  typeof CALCULATION_STORE_NAME,
   CalculationStoreState,
   CalculationStoreGetters,
   CalculationStoreActions
