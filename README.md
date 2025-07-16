@@ -1,95 +1,307 @@
-# RenovationHelper
+# Renovation Helper
 
-## FRPC
-`frpc -c ~/.frp/frpc.toml`
+<div align="center">
+  <h3>🏠 Full-Stack Renovation Cost Calculator</h3>
+  <p>Vue.js • Fastify • Telegram WebApp • PDF Generation</p>
+  
+  <img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45" alt="Nx Monorepo">
+  <br><br>
+</div>
 
-Check that in Nginx Proxy Manager redirection to right local server IP.
+## 📋 Overview
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Renovation Helper - это современное full-stack приложение для расчета стоимости ремонта с автоматической генерацией PDF отчетов. Построено на микросервисной архитектуре с использованием NX монорепозитория.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## 🏗️ Architecture
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-## Finish your CI setup
-
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/tF5pewvdu6)
-
-
-## Generate a library
-
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Web App   │───▶│ Backend API │───▶│ PDF Worker  │───▶│ Telegram    │
+│  (Vue.js)   │    │ (Fastify)   │    │ (Puppeteer) │    │    Bot      │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+       │                   │                   │                   │
+       │                   ▼                   ▼                   │
+       │            ┌─────────────┐    ┌─────────────┐             │
+       │            │  Firebase   │    │   Redis     │             │
+       │            │ (Firestore) │    │   Queue     │             │
+       │            └─────────────┘    └─────────────┘             │
+       │                                                           │
+       └───────────────────────────────────────────────────────────┘
+                           Telegram WebApp Integration
 ```
 
-## Run tasks
+### 🎯 Key Features
 
-To build the library use:
+- **🧮 Dynamic Calculator**: Step-by-step renovation cost calculation
+- **📄 PDF Reports**: Beautiful PDF generation with custom templates
+- **📱 Telegram Integration**: Native Telegram WebApp experience
+- **🔐 JWT Authentication**: Secure token-based authentication
+- **📊 Logging & Monitoring**: Comprehensive observability with structured logging
+- **⚡ Real-time Processing**: Asynchronous PDF generation via Redis queues
+- **🏢 Multi-tenant**: Company-based data isolation
 
-```sh
-npx nx build pkg1
+## 🚀 Quick Start
+
+### 📦 Installation
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd renovation_helper
+
+# Install dependencies
+yarn install
+
+# Setup environment variables (see .env.example)
+cp .env.example .env
 ```
 
-To run any task with Nx use:
+### 🗂️ Project Structure
 
-```sh
+```
+renovation_helper/
+├── backend-api/          # REST API server (Fastify + TypeScript)
+├── pdf-worker/           # PDF generation worker (Puppeteer + Bull.js)
+├── web/                  # Frontend application (Vue.js + Telegram WebApp)
+├── bot/                  # Telegram bot
+├── common/               # Shared types, services, repositories
+├── libs/                 # Shared libraries (NX libs)
+│   └── pdf-worker-types/ # PDF Worker type definitions
+├── k8s/                  # Kubernetes manifests
+└── scripts/              # Deployment and utility scripts
+```
+
+### 🏃 Development
+
+```bash
+# Start all services
+yarn api:serve           # Backend API (http://localhost:3000)
+yarn pdf-worker:serve    # PDF Worker
+yarn web:serve           # Frontend (http://localhost:4200)
+yarn bot:serve           # Telegram Bot
+
+# With debug logging
+LOG_LEVEL=debug yarn api:serve
+
+# Build for production
+yarn web:build
+yarn api:build
+yarn pdf-worker:build
+```
+
+### 🔧 Prerequisites
+
+- **Node.js** 18+
+- **Redis** (for PDF queue)
+- **Firebase** project with Firestore
+- **Telegram Bot** token
+
+#### Redis Setup (Local Development)
+
+```bash
+# Using k3s cluster (recommended)
+k3d cluster create dev-cluster --port "8080:80@loadbalancer" --port "8443:443@loadbalancer"
+kubectl apply -f k8s/redis.yaml
+kubectl port-forward svc/redis 6379:6379 &
+
+# Or using Docker
+docker run -d -p 6379:6379 redis:7-alpine
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+```env
+# Backend API
+TELEGRAM_BOT_TOKEN=your_bot_token_here
+JWT_SECRET=your_jwt_secret
+FIREBASE_PROJECT_ID=your_firebase_project
+LOG_LEVEL=info
+
+# PDF Worker
+REDIS_HOST=localhost
+REDIS_PORT=6379
+WORKER_CONCURRENCY=2
+
+# Development
+NODE_ENV=development
+```
+
+### Firebase Setup
+
+1. Create Firebase project
+2. Enable Firestore database
+3. Download service account key
+4. Set `FIREBASE_PROJECT_ID` in environment
+
+### Telegram Bot Setup
+
+1. Create bot via [@BotFather](https://t.me/botfather)
+2. Get bot token
+3. Set `TELEGRAM_BOT_TOKEN` in environment
+4. Configure webhook URL for production
+
+## 📊 Features
+
+### Calculator System
+- **Dynamic Steps**: Boolean, select, checkbox, number input types
+- **Conditional Logic**: Step flow based on user answers
+- **Price Calculation**: Real-time cost calculation
+- **Company Branding**: Multi-tenant company support
+
+### PDF Report Generation
+- **Handlebars Templates**: Customizable HTML templates
+- **Asynchronous Processing**: Queue-based generation with Bull.js
+- **Professional Design**: Modern, printable PDF layouts
+- **Automatic Delivery**: Direct send to Telegram chat
+
+### Authentication & Security
+- **Telegram WebApp**: Native Telegram integration
+- **JWT Tokens**: Secure stateless authentication
+- **HTTP-only Cookies**: XSS protection
+- **Domain-based Routing**: Company isolation
+
+### Observability & Monitoring
+- **Structured Logging**: JSON logs with Pino
+- **Correlation IDs**: Request tracing across services
+- **Performance Metrics**: Counters, timers, histograms
+- **Error Tracking**: Comprehensive error classification
+- **Health Checks**: Service availability monitoring
+
+## 🚀 Deployment
+
+### Docker Compose (Recommended)
+
+```bash
+# Production deployment
+docker-compose -f docker-compose.prod.yml up -d
+
+# Development
+docker-compose -f docker-compose.dev.yml up
+
+# Quick deployment script
+./scripts/deploy-worker.sh
+```
+
+### Kubernetes
+
+```bash
+# Deploy to k8s cluster
+kubectl apply -f k8s/
+
+# Check status
+kubectl get pods
+kubectl logs -f deployment/backend-api
+```
+
+### Manual Deployment
+
+```bash
+# Build applications
+yarn nx build backend-api --configuration=production
+yarn nx build pdf-worker --configuration=production
+yarn nx build web --configuration=production
+
+# Start services
+PORT=3000 node backend-api/dist/main.js
+node pdf-worker/dist/main.js
+```
+
+## 🧪 Testing
+
+```bash
+# Unit tests
+yarn nx test backend-api
+yarn nx test pdf-worker
+yarn nx test web
+
+# Integration tests
+yarn nx test backend-api --coverage
+
+# E2E tests
+yarn nx e2e web-e2e
+```
+
+## 📖 Documentation
+
+- [**CLAUDE.md**](./CLAUDE.md) - Development guide and architecture
+- [**PDF Worker Guide**](./pdf-worker/README.md) - PDF generation service
+- [**Logging & Monitoring**](./backend-api/LOGGING_AND_MONITORING.md) - Observability setup
+- [**API Documentation**](./backend-api/docs/) - REST API reference
+
+## 🛠️ Development Tools
+
+### NX Commands
+
+```bash
+# Project graph visualization
+npx nx graph
+
+# Run specific target
 npx nx <target> <project-name>
-```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+# Build all projects
+npx nx run-many --target=build
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
-
-```
-npx nx release
-```
-
-Pass `--dry-run` to see what would happen without actually releasing the library.
-
-[Learn more about Nx release &raquo;](hhttps://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
+# TypeScript project references sync
 npx nx sync
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+### Monitoring Tools
 
-```sh
-npx nx sync:check
-```
+- **RedisInsight** - Redis queue monitoring
+- **Lens** - Kubernetes cluster management
+- **Pino Pretty** - Pretty-print structured logs
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+## 🔍 Troubleshooting
 
+### Common Issues
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+1. **PDF Worker not processing jobs**
+   ```bash
+   # Check Redis connection
+   redis-cli ping
+   kubectl port-forward svc/redis 6379:6379
+   ```
 
-## Install Nx Console
+2. **Authentication errors**
+   ```bash
+   # Verify JWT secret and Telegram bot token
+   echo $JWT_SECRET
+   echo $TELEGRAM_BOT_TOKEN
+   ```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+3. **Build errors**
+   ```bash
+   # Clean and rebuild
+   yarn nx reset
+   yarn nx run-many --target=build
+   ```
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📞 Support
 
-## Useful links
+For issues and questions:
 
-Learn more:
+1. Check [documentation](./CLAUDE.md)
+2. Review logs: `LOG_LEVEL=debug yarn api:serve`
+3. Verify environment configuration
+4. Check service health endpoints
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🎯 Technology Stack
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Frontend**: Vue.js 3, Pinia, Naive UI, Vite
+- **Backend**: Fastify 5, TypeScript, Firebase Admin
+- **Queue**: Redis, Bull.js
+- **PDF**: Puppeteer, Handlebars
+- **Auth**: JWT, Telegram WebApp
+- **Database**: Firestore (NoSQL)
+- **Logging**: Pino, structured JSON
+- **Monitoring**: Custom metrics, correlation IDs
+- **DevOps**: Docker, Kubernetes, NX Monorepo
+
+---
+
+**Version**: 1.0.0  
+**Last Updated**: 2025-07-16  
+**Maintainer**: isaldin
