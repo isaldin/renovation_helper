@@ -12,7 +12,7 @@ import { logger } from '../../utils/logger';
 import { metrics, timed } from '../../utils/metrics';
 import { errorTracker, trackErrors } from '../../utils/errorTracking';
 import { OptionItem, StepWithOptionsFrom, Step } from '@common/types';
-import { getOrderedSteps } from './getOrderedSteps.ts';
+import { getOrderedSteps } from './getOrderedSteps';
 
 interface ReportData {
   companyInfo: {
