@@ -24,6 +24,9 @@ export const stepWithNextStepSchema = stepCommonSchema.extend({
   nextStep: stepCommonSchema.shape.id,
 });
 export type StepWithNextStep = z.infer<typeof stepWithNextStepSchema>;
+export const isStepWithNextStep = (step: Record<string, unknown>): step is StepWithNextStep => {
+  return 'nextStep' in step;
+};
 
 export const stepWithOptionsFromSchema = stepWithNextStepSchema.extend({
   type: z.enum(['select', 'checkbox']),
@@ -44,8 +47,10 @@ export const stepWithNumberSchema = stepWithNextStepSchema.extend({
 });
 export type StepWithNumber = z.infer<typeof stepWithNumberSchema>;
 
-export const stepWithBooleanSchema = stepWithNextStepSchema.extend({
+const stepWithBooleanSchema = stepWithNextStepSchema.extend({
   type: z.literal('boolean'),
+  price: z.number().optional(),
+  pricePerM2: z.number().optional(),
 });
 export type StepWithBoolean = z.infer<typeof stepWithBooleanSchema>;
 
