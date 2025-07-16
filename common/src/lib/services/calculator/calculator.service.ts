@@ -22,7 +22,7 @@ export class CalculatorService {
     const calculator = await this.calculatorRepository.getById(calculatorId);
 
     if (!calculator) {
-      throw new CalculatorNotFoundError();
+      throw new CalculatorNotFoundError(calculatorId);
     }
 
     const settings = await this.settingsService.getByCalculatorId(calculator.id);
