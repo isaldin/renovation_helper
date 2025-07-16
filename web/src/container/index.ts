@@ -6,6 +6,7 @@ import { AppInitService } from '@app/services/appInit.service';
 import { MeService } from '@app/services/me.service';
 import { AppStateService } from '@app/services/appState.service';
 import { HttpCalculationResultsService } from '@app/services/httpCalculationResults.service';
+import { ReportService } from '@app/services/report.service';
 
 const get = <T>(name: ServiceNames) => container.resolve<T>(name) as T;
 
@@ -21,3 +22,5 @@ export const getAppStateService = () => get<AppStateService>(ServiceNames.WAAppS
 
 export const getHttpCalculationResultsService = () =>
   get<HttpCalculationResultsService>(ServiceNames.WAHttpCalculationResultsService);
+
+export const getReportService = () => get<ReportService>(ServiceNames.WAReportService);

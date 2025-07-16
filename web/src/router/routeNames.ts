@@ -3,4 +3,5 @@ export enum RouteNames {
   calculation = 'calculation',
   unauth = 'unauth',
   error = 'error',
+  waitReport = 'wait-report',
 }

@@ -27,6 +27,11 @@ export const routes: RouteRecordRaw[] = [
         name: RouteNames.error,
         component: () => import('../views/error-page/ErrorPage.vue'),
       },
+      {
+        path: 'wait-report',
+        name: RouteNames.waitReport,
+        component: () => import('../views/wait-report-page/WaitReportPage.vue'),
+      },
     ],
   },
 ];

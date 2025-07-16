@@ -30,6 +30,7 @@ export enum ServiceNames {
   WAMeService = 'WAMeService',
   WAAppStateService = 'WAAppStateService',
   WAHttpCalculationResultsService = 'WAHttpCalculationResultsService',
+  WAReportService = 'WAReportService',
   // Interceptors
   WAUnauthInterceptor = 'WAUnauthInterceptor',
 

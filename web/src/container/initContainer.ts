@@ -14,6 +14,7 @@ import { getAuthServiceClass } from '@app/services/auth';
 import { MeService } from '@app/services/me.service';
 import { AppStateService } from '@app/services/appState.service';
 import { HttpCalculationResultsService } from '@app/services/httpCalculationResults.service';
+import { ReportService } from '@app/services/report.service';
 
 export const initContainer = async () => {
   const AuthService = await getAuthServiceClass();
@@ -42,5 +43,6 @@ export const initContainer = async () => {
     );
 
     container.registerSingleton<UnauthInterceptor>(ServiceNames.WAUnauthInterceptor, UnauthInterceptor);
+    container.registerSingleton<ReportService>(ServiceNames.WAReportService, ReportService);
   });
 };

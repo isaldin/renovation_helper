@@ -71,7 +71,7 @@
 
 <script lang="ts" setup>
 import CalculationStepView from '@app/views/calculation/CalculationStepView.vue';
-import { NButton, NH2, NSpin, NCard } from 'naive-ui';
+import { NButton, NCard, NH2, NSpin } from 'naive-ui';
 import CalculationStepsInfoView from '@app/views/calculation/CalculationStepsInfoView.vue';
 import CalculationStepsNav from '@app/views/calculation/CalculationStepsNav.vue';
 import { useCalculation } from '@app/compositions/calculation/useCalculation';
@@ -86,6 +86,9 @@ import CalculationStepEditNav from '@app/views/calculation/CalculationStepEditNa
 import { AnswerType } from '@/common/types/calculator';
 import { useCalculatorResults } from '@app/compositions/calculation/useCalculatorResults';
 import RhModal from '@app/components/RhModal.vue';
+import { useGetReport } from '@app/compositions/useGetReport';
+import { getRouterService } from '@app/container';
+import { RouteNames } from '@app/router/routeNames';
 
 const {
   currentStep,
@@ -198,14 +201,14 @@ const handleGetReportClick = async () => {
   const calculatorId = getCalculatorId();
   const answers = getAnswers();
 
-  const { saveCalculatorResults } = useCalculatorResults();
-
   if (!calculatorId) {
     return;
   }
 
   try {
-    await saveCalculatorResults(calculatorId, answers);
+    await useCalculatorResults().saveCalculatorResults(calculatorId, answers);
+    await useGetReport().getReport();
+    getRouterService().goTo(RouteNames.waitReport);
   } catch (error) {
     showErrorModal.value = true;
   } finally {
