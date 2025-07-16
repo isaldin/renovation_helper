@@ -1,25 +1,13 @@
 import { useCalculationStore } from '@app/stores/calculation';
-import { computed, ComputedRef } from 'vue';
+import { computed } from 'vue';
 import { EntityNotFoundError } from '@/common/errors';
-import { StepWithOptions } from '@app/stores/calculation/types';
 import { useRouteParams } from '@app/compositions/calculation/useRouteParams';
 import { Calculator, Step, StepId, SubStep } from '@/common/types';
 import { AnswerType } from '@/common/types/calculator';
 
 export const useCalculation = () => {
   const calculationStore = useCalculationStore();
-  const { stepId, subStepId, companyId, calculatorId } = useRouteParams();
-
-  const stepFromRoute: ComputedRef<StepWithOptions | null> = computed(() =>
-    stepId.value ? calculationStore.steps[stepId.value as string] : null
-  );
-
-  const subStepFromRoute: ComputedRef<SubStep | null> = computed(() => {
-    if (!subStepId.value) {
-      return null;
-    }
-    return calculationStore.subSteps.find((subStep) => subStep.id === subStepId.value) || null;
-  });
+  const { calculatorId } = useRouteParams();
 
   const currentStep = computed(() => calculationStore.currentStep);
   const currentSubStep = computed(() => calculationStore.currentSubStep);
@@ -55,8 +43,7 @@ export const useCalculation = () => {
 
   const stepsCount = computed(() => calculationStore.stepsCount);
 
-  const loadCalculator = () =>
-    calculationStore.fetchCalculator(companyId.value as string, calculatorId.value as string);
+  const loadCalculator = () => calculationStore.fetchCalculator(calculatorId.value as string);
 
   const subStepForCurrentStep = computed(() => {
     if (!currentStep.value || !currentAnswer.value) {
@@ -120,8 +107,6 @@ export const useCalculation = () => {
     goToNextStep,
     goToPrevStep,
     setAnswerForStep,
-    stepFromRoute,
-    subStepFromRoute,
     stepsCount,
     summaryStep,
     setSummaryStep,

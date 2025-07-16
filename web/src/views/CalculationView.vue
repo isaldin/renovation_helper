@@ -46,7 +46,23 @@
         @prev="handleGoToPrevStep"
       >
         <template v-if="isSummaryStep" #right-button>
-          <n-button type="primary" @click="handleGetReportClick"> Получить расчет </n-button>
+          <n-spin :show="saveCalculationInProgress" :size="16" stroke="white">
+            <n-button type="primary" :disabled="saveCalculationInProgress" @click="handleGetReportClick">
+              Получить расчет
+            </n-button>
+            <rh-modal :show-modal="showErrorModal">
+              <n-card>
+                <n-card title="Ошибка при сохранении" :bordered="false" size="small" role="dialog" aria-modal="true">
+                  Пожалуйста, попробуйте еще раз позже или обратитесь к администратору.
+                  <template #footer>
+                    <div class="flex justify-end">
+                      <n-button type="primary" size="small" @click="showErrorModal = false"> Ok </n-button>
+                    </div>
+                  </template>
+                </n-card>
+              </n-card>
+            </rh-modal>
+          </n-spin>
         </template>
       </calculation-steps-nav>
     </template>
@@ -55,7 +71,7 @@
 
 <script lang="ts" setup>
 import CalculationStepView from '@app/views/calculation/CalculationStepView.vue';
-import { NButton, NH2, NSpin } from 'naive-ui';
+import { NButton, NH2, NSpin, NCard } from 'naive-ui';
 import CalculationStepsInfoView from '@app/views/calculation/CalculationStepsInfoView.vue';
 import CalculationStepsNav from '@app/views/calculation/CalculationStepsNav.vue';
 import { useCalculation } from '@app/compositions/calculation/useCalculation';
@@ -69,6 +85,7 @@ import { getDefaultOptionId } from '@app/stores/calculation/helpers';
 import CalculationStepEditNav from '@app/views/calculation/CalculationStepEditNav.vue';
 import { AnswerType } from '@/common/types/calculator';
 import { useCalculatorResults } from '@app/compositions/calculation/useCalculatorResults';
+import RhModal from '@app/components/RhModal.vue';
 
 const {
   currentStep,
@@ -173,7 +190,11 @@ const handleUpdateAnswersMap = (newAnswersMap: AnswersMap) => {
   answersMap.value = stepChanged ? newAnswersMap : { ...answersMap.value, ...newAnswersMap };
 };
 
+const saveCalculationInProgress = ref(false);
+const showErrorModal = ref(false);
 const handleGetReportClick = async () => {
+  saveCalculationInProgress.value = true;
+
   const calculatorId = getCalculatorId();
   const answers = getAnswers();
 
@@ -183,7 +204,13 @@ const handleGetReportClick = async () => {
     return;
   }
 
-  await saveCalculatorResults(calculatorId, answers);
+  try {
+    await saveCalculatorResults(calculatorId, answers);
+  } catch (error) {
+    showErrorModal.value = true;
+  } finally {
+    saveCalculationInProgress.value = false;
+  }
 };
 
 onMounted(() => {
