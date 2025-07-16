@@ -1,5 +1,4 @@
 import { injectable, inject } from 'tsyringe';
-import { z } from 'zod';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ServiceNames } from '@common';
 import { CalculatorService } from '@common/services/calculator/calculator.service';
@@ -32,12 +31,6 @@ interface ReportData {
   currency: string;
 }
 
-const reportRequestSchema = z.object({});
-
-type ReportRequestRequest = FastifyRequest<{
-  Body: z.infer<typeof reportRequestSchema>;
-}>;
-
 @injectable()
 export class ReportController {
   constructor(
@@ -49,7 +42,7 @@ export class ReportController {
 
   @timed('report_generation', { operation: 'getReport' })
   @trackErrors('getReport', 'report-controller', 'high')
-  public async getReport(request: ReportRequestRequest, reply: FastifyReply) {
+  public async getReport(request: FastifyRequest, reply: FastifyReply) {
     const { calculatorId, userId } = request.user;
 
     // Set operation context for all subsequent logs
@@ -276,9 +269,5 @@ export class ReportController {
   private calculateTotalPrice(_calculator: Calculator, _results: Record<string, AnswerType | null>): number {
     // This is a placeholder
     return 123300;
-  }
-
-  public get reportRequestSchema() {
-    return reportRequestSchema;
   }
 }
