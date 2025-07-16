@@ -1,36 +1,19 @@
 import 'reflect-metadata';
 
 import './styles.scss';
+import App from '@app/views/App.vue';
 import { createApp } from 'vue';
-import { registerContainer, ServiceNames } from '@/common';
-import { container, DependencyContainer } from 'tsyringe';
-import { firebaseServiceConfig } from './services/firebaseConfig.service';
-import { FirebaseService, FirebaseServiceConfig } from '@/common/services';
-import { AppInitService } from './services/appInit.service';
 import { createPinia } from 'pinia';
 import piniaPersistedState from 'pinia-plugin-persistedstate';
-import { RouterService } from '@app/services/routerService';
-import { TelegramWebAppService } from '@app/services/telegramWebApp.service';
-import App from '@app/views/App.vue';
+import { getAppInitService, getRouterService } from '@app/container';
+import { initContainer } from '@app/container/initContainer';
 
 const startApp = async () => {
-  registerContainer((container: DependencyContainer) => {
-    container.register<FirebaseServiceConfig>(ServiceNames.WAFirebaseConfigService, {
-      useValue: firebaseServiceConfig,
-    });
-    container.registerSingleton(ServiceNames.FirebaseService, FirebaseService);
-    container.registerSingleton<AppInitService>(ServiceNames.WAAppInitService, AppInitService);
-    container.registerSingleton<RouterService>(ServiceNames.WARouterService, RouterService);
-    container.registerSingleton<TelegramWebAppService>(ServiceNames.WATelegramWebAppService, TelegramWebAppService);
-  });
-
-  const appInitService = container.resolve<AppInitService>(ServiceNames.WAAppInitService);
-  const routerService = container.resolve<RouterService>(ServiceNames.WARouterService);
-
-  await appInitService.initializeApp();
+  await initContainer();
 
   const app = createApp(App);
 
+  const routerService = getRouterService();
   app.use(routerService.router);
 
   const pinia = createPinia();
@@ -38,14 +21,9 @@ const startApp = async () => {
   app.use(pinia);
 
   app.mount('#root');
-};
 
-try {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  console.log(Telegram.WebApp);
-} catch {
-  //
-}
+  const appInitService = getAppInitService();
+  await appInitService.initializeApp();
+};
 
 startApp();
