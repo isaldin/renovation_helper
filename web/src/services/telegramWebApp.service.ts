@@ -18,4 +18,8 @@ export class TelegramWebAppService {
 
     return Telegram.WebApp.initData;
   }
+
+  public closeApp() {
+    window.Telegram.WebApp.close();
+  }
 }

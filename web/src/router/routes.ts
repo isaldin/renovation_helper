@@ -2,6 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { RouteNames } from '@app/router/routeNames';
 import HomeView from '@app/views/HomeView.vue';
 import CalculationView from '@app/views/CalculationView.vue';
+import { calculationGuard } from './guards/calculation.guard';
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -13,6 +14,7 @@ export const routes: RouteRecordRaw[] = [
     path: '/calculation/:calculatorId?',
     name: RouteNames.calculation,
     component: CalculationView,
+    beforeEnter: calculationGuard,
   },
   {
     path: '/pages',
@@ -31,6 +33,11 @@ export const routes: RouteRecordRaw[] = [
         path: 'wait-report',
         name: RouteNames.waitReport,
         component: () => import('../views/wait-report-page/WaitReportPage.vue'),
+      },
+      {
+        path: 'report-already-exists',
+        name: RouteNames.reportAlreadyExists,
+        component: () => import('../views/report-already-exists-page/ReportAlreadyExistsPage.vue'),
       },
     ],
   },

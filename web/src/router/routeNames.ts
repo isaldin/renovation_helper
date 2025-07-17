@@ -4,4 +4,5 @@ export enum RouteNames {
   unauth = 'unauth',
   error = 'error',
   waitReport = 'wait-report',
+  reportAlreadyExists = 'report-already-exists',
 }
