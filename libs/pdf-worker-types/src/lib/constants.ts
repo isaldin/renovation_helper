@@ -9,6 +9,8 @@ export const DEFAULT_QUEUE_OPTIONS = {
     type: 'exponential' as const,
     delay: 2000,
   },
+  delay: 0,
+  timeout: 120000, // 2 minutes timeout for jobs
 };
 
 export const DEFAULT_PDF_OPTIONS = {
@@ -32,5 +34,7 @@ export const DEFAULT_REDIS_CONFIG = {
 export const DEFAULT_WORKER_CONCURRENCY = Number(process.env.WORKER_CONCURRENCY) || 2;
 
 // Timeouts
-export const DEFAULT_JOB_TIMEOUT = 30000; // 30 seconds
-export const PDF_GENERATION_TIMEOUT = 30000; // 30 seconds
+export const DEFAULT_JOB_TIMEOUT = 120000; // 2 minutes
+export const PDF_GENERATION_TIMEOUT = 90000; // 1.5 minutes
+export const STALL_INTERVAL = 30000; // 30 seconds - how long a job can run before being considered stalled
+export const MAX_STALLED_COUNT = 3; // Maximum number of times a job can be stalled before failing

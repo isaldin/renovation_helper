@@ -2,12 +2,15 @@ import puppeteer, { Browser } from 'puppeteer';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
+import { injectable } from 'tsyringe';
+import { Shutdownable } from './graceful-shutdown.types';
 import { logger } from '../utils/logger';
 import { PdfJobData, PdfOptions, DEFAULT_PDF_OPTIONS } from '@renovation-helper/pdf-worker-types';
 
 export type ReportData = PdfJobData['reportData'];
 
-export class PdfService {
+@injectable()
+export class PdfService implements Shutdownable {
   private browser: Browser | null = null;
   private template: Handlebars.TemplateDelegate | null = null;
 

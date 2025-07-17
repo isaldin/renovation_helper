@@ -1,8 +1,11 @@
 import { Bot, InputFile } from 'grammy';
+import { injectable } from 'tsyringe';
+import { Shutdownable } from './graceful-shutdown.types';
 import { logger } from '../utils/logger';
 import { TelegramPdfOptions } from '@renovation-helper/pdf-worker-types';
 
-export class TelegramService {
+@injectable()
+export class TelegramService implements Shutdownable {
   private bot: Bot;
 
   constructor() {
@@ -10,7 +13,7 @@ export class TelegramService {
     if (!botToken) {
       throw new Error('TELEGRAM_BOT_TOKEN environment variable is required');
     }
-    
+
     this.bot = new Bot(botToken);
   }
 
@@ -31,10 +34,10 @@ export class TelegramService {
     }
   }
 
-  async sendPdf(chatId: string, pdfBuffer: Buffer, options: TelegramPdfOptions): Promise<void> {
+  async sendPdf(chatId: string, pdfBuffer: Buffer, options: TelegramPdfOptions): Promise<string> {
     try {
       const inputFile = new InputFile(pdfBuffer, options.filename);
-      
+
       const message = await this.bot.api.sendDocument(chatId, inputFile, {
         caption: options.caption,
       });
@@ -44,6 +47,8 @@ export class TelegramService {
         filename: options.filename,
         messageId: message.message_id,
       });
+
+      return message.document.file_id;
     } catch (error) {
       logger.error('Failed to send PDF to Telegram', {
         chatId,

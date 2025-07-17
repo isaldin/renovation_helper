@@ -23,6 +23,7 @@ export interface PdfJobData {
   userId: string;
   calculatorId: string;
   telegramUserId: string;
+  calculatorResultsId: string;
   options?: PdfOptions;
 }
 

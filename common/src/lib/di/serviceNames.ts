@@ -47,4 +47,11 @@ export enum ServiceNames {
   BADomainCalculatorMapRepository = 'BADomainCalculatorMapRepository',
   // services
   BADomainCalculatorMapService = 'BADomainCalculatorMapService',
+
+  // PDF Worker service names
+  PWPdfService = 'PWPdfService',
+  PWTelegramService = 'PWTelegramService',
+  PWPdfWorkerService = 'PWPdfWorkerService',
+  PWGracefulShutdownService = 'PWGracefulShutdownService',
+  PWLoggerService = 'PWLoggerService',
 }

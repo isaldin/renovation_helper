@@ -9,13 +9,21 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "@common": ["../common/dist/src/lib/index"],
+      "@common/*": ["../common/dist/src/lib/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],
   "exclude": [],
   "references": [
     {
       "path": "../libs/pdf-worker-types/tsconfig.lib.json"
+    },
+    {
+      "path": "../common/tsconfig.lib.json"
     }
   ]
 }

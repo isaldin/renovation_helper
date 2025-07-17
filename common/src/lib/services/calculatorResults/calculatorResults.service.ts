@@ -8,6 +8,7 @@ type CalculatorResultsInput = {
   userId: string;
   calculatorId: string;
   results: Record<string, AnswerType | null>;
+  reportId?: string;
 };
 
 @injectable()

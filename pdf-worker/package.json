@@ -11,6 +11,7 @@
         ],
         "defaultConfiguration": "production",
         "options": {
+          "esbuildConfig": "pdf-worker/esbuild.config.cjs",
           "platform": "node",
           "outputPath": "pdf-worker/dist",
           "format": [
@@ -21,24 +22,11 @@
           "tsConfig": "pdf-worker/tsconfig.app.json",
           "assets": [
             "pdf-worker/src/assets"
-          ],
-          "esbuildOptions": {
-            "sourcemap": true,
-            "outExtension": {
-              ".js": ".js"
-            }
-          }
+          ]
         },
         "configurations": {
           "development": {},
-          "production": {
-            "esbuildOptions": {
-              "sourcemap": false,
-              "outExtension": {
-                ".js": ".js"
-              }
-            }
-          }
+          "production": {}
         }
       },
       "serve": {

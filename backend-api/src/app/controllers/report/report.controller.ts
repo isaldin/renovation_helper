@@ -126,6 +126,7 @@ export class ReportController {
         userId,
         calculatorId,
         telegramUserId: request.user?.userId || userId,
+        calculatorResultsId: results[0].id,
       });
       queueTimer.end();
 
