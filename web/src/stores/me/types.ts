@@ -7,6 +7,7 @@ export type MeUser = {
   authDate: Date;
   companyId: string;
   calculatorId: string;
+  reportId?: string;
 };
 
 export type MeStoreState = {

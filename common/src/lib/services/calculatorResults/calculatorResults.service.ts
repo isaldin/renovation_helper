@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import { ServiceNames } from '../../di';
 import { CalculatorResultsRepository } from '../../repository/calculatorResults/calculatorResults.repository';
-import { CalculatorResults } from '../../types/calculatorResults';
+import { CalculatorResults } from '../../types';
 import { AnswerType } from '../../types';
 
 type CalculatorResultsInput = {

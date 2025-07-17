@@ -1,5 +1,5 @@
 import { FirestoreRepository } from '../firebase/firestoreRepository';
-import { CalculatorResults } from '../../types/calculatorResults';
+import { CalculatorResults } from '../../types';
 import { injectable, inject } from 'tsyringe';
 import { ServiceNames } from '../../di';
 import { FirebaseStore } from '../firebase/firebaseStore';
