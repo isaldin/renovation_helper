@@ -5,7 +5,15 @@ import { CalculatorService } from '@common/services/calculator/calculator.servic
 import { CalculatorResultsService } from '@common/services/calculatorResults/calculatorResults.service';
 import { CompanyService } from '@common/services';
 import { CalculatorNotFoundError } from '@common/errors';
-import { Calculator, Company, CalculatorResults, AnswerType, SubStep, isSubStepWithOptionItems } from '@common/types';
+import {
+  Calculator,
+  Company,
+  CalculatorResults,
+  AnswerType,
+  SubStep,
+  isSubStepWithOptionItems,
+  isStepWithOptionsFrom,
+} from '@common/types';
 import { PdfQueueService } from '../../services/pdf-queue.service';
 import { logger } from '../../utils/logger';
 import { metrics, timed } from '../../utils/metrics';
@@ -299,8 +307,80 @@ export class ReportController {
     return String(answer);
   }
 
-  private calculateTotalPrice(_calculator: Calculator, _results: Record<string, AnswerType | null>): number {
-    // This is a placeholder
-    return 123300;
+  private calculateTotalPrice(calculator: Calculator, results: Record<string, AnswerType | null>): number {
+    let totalPrice = 0;
+
+    // Get area from results (assuming there's an 'area' step)
+    const area = Number(results['area']) || 0;
+
+    // Calculate pricing from main steps
+    for (const step of calculator.steps) {
+      const answer = results[step.id];
+      if (answer === null || answer === undefined) continue;
+
+      // Handle boolean steps
+      if (step.type === 'boolean' && answer === true) {
+        totalPrice += step.price || 0;
+        totalPrice += (step.pricePerM2 || 0) * area;
+      }
+
+      // Handle select/checkbox steps
+      if (isStepWithOptionsFrom(step)) {
+        const selectedIds = Array.isArray(answer) ? answer : [answer];
+
+        for (const selectedId of selectedIds) {
+          const options = calculator.optionList.find((list) => list.id === step.optionsFrom)?.options || [];
+          const selectedOption = options.find((item) => item.id === selectedId);
+          if (selectedOption) {
+            totalPrice += selectedOption.price || 0;
+            totalPrice += (selectedOption.pricePerM2 || 0) * area;
+          }
+        }
+      }
+
+      // Handle number steps with pricing
+      if (step.type === 'number' && typeof answer === 'number') {
+        totalPrice += (step.price || 0) * answer;
+        totalPrice += (step.pricePerM2 || 0) * area;
+      }
+    }
+
+    // Calculate pricing from substeps
+    for (const subStep of calculator.subSteps) {
+      const parentAnswer = results[subStep.sourceStepId];
+      if (parentAnswer === null || parentAnswer === undefined) continue;
+
+      // Check if this substep should be activated
+      const shouldActivate = Array.isArray(subStep.choiceFromSource)
+        ? subStep.choiceFromSource.includes(parentAnswer as string)
+        : subStep.choiceFromSource === parentAnswer;
+
+      if (!shouldActivate) continue;
+
+      // Get substep answer
+      const subStepAnswer = results[subStep.id];
+      if (subStepAnswer === null || subStepAnswer === undefined) continue;
+
+      // Handle boolean substeps
+      if (subStep.type === 'boolean' && subStepAnswer === true) {
+        totalPrice += subStep.price || 0;
+        totalPrice += (subStep.pricePerM2 || 0) * area;
+      }
+
+      // Handle select/checkbox substeps
+      if (subStep.type === 'select' || subStep.type === 'checkbox') {
+        const selectedIds = Array.isArray(subStepAnswer) ? subStepAnswer : [subStepAnswer];
+
+        for (const selectedId of selectedIds) {
+          const selectedOption = subStep.optionItems.find((item) => item.id === selectedId);
+          if (selectedOption) {
+            totalPrice += selectedOption.price || 0;
+            totalPrice += (selectedOption.pricePerM2 || 0) * area;
+          }
+        }
+      }
+    }
+
+    return Math.round(totalPrice);
   }
 }

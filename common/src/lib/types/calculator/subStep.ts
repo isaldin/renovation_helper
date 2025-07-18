@@ -36,6 +36,8 @@ export const isSubStepWithOptionItems = (input: SubStep): input is SubStepSelect
 export const subStepBooleanSchema = subStepCommonSchema.extend({
   type: z.literal('boolean'),
   embed: z.boolean().optional(),
+  price: z.number().optional(),
+  pricePerM2: z.number().optional(),
 });
 export type SubStepBoolean = z.infer<typeof subStepBooleanSchema>;
 

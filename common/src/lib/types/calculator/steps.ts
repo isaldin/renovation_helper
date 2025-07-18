@@ -41,9 +41,14 @@ export const stepWithOptionsFromSchema = stepWithNextStepSchema.extend({
     .optional(),
 });
 export type StepWithOptionsFrom = z.infer<typeof stepWithOptionsFromSchema>;
+export const isStepWithOptionsFrom = (step: Record<string, unknown>): step is StepWithOptionsFrom => {
+  return 'optionsFrom' in step;
+};
 
 export const stepWithNumberSchema = stepWithNextStepSchema.extend({
   type: z.literal('number'),
+  price: z.number().optional(),
+  pricePerM2: z.number().optional(),
 });
 export type StepWithNumber = z.infer<typeof stepWithNumberSchema>;
 
