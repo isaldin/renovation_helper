@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{reportInfo.title}} - Renovation Calculator Report</title>
+    <title>Ремонт квартиры 85м² - Renovation Calculator Report</title>
     <style>
         * {
             margin: 0;
@@ -201,19 +201,19 @@
             <div class="company-grid">
                 <div class="company-item">
                     <span class="label">Компания</span>
-                    <span class="value">{{companyInfo.name}}</span>
+                    <span class="value">СтройПрофи</span>
                 </div>
                 <div class="company-item">
                     <span class="label">Телефон</span>
-                    <span class="value">{{companyInfo.phone}}</span>
+                    <span class="value">+7 (495) 123-45-67</span>
                 </div>
                 <div class="company-item">
                     <span class="label">Email</span>
-                    <span class="value">{{companyInfo.email}}</span>
+                    <span class="value">info@stroyprofi.ru</span>
                 </div>
                 <div class="company-item">
                     <span class="label">Дата расчета</span>
-                    <span class="value">{{reportInfo.date}}</span>
+                    <span class="value">18.07.2025</span>
                 </div>
             </div>
         </div>
@@ -230,19 +230,61 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each options}}
                     <tr>
-                        <td class="question">{{this.question}}</td>
-                        <td class="answer">{{this.answer}}</td>
+                        <td class="question">Площадь квартиры</td>
+                        <td class="answer">85 м²</td>
                     </tr>
-                    {{/each}}
+                    <tr>
+                        <td class="question">Тип ремонта</td>
+                        <td class="answer">Капитальный ремонт</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Замена электропроводки</td>
+                        <td class="answer">Да</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Замена сантехники</td>
+                        <td class="answer">Полная замена</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Тип напольного покрытия</td>
+                        <td class="answer">Паркетная доска</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Натяжные потолки</td>
+                        <td class="answer">Матовые белые</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Покраска стен</td>
+                        <td class="answer">Да, в 2 слоя</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Количество комнат</td>
+                        <td class="answer">3 комнаты</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Замена окон</td>
+                        <td class="answer">4 окна, ПВХ</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Межкомнатные двери</td>
+                        <td class="answer">6 дверей, экошпон</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Укладка плитки в ванной</td>
+                        <td class="answer">Керамогранит 30×60</td>
+                    </tr>
+                    <tr>
+                        <td class="question">Дополнительные работы</td>
+                        <td class="answer">Шумоизоляция стен</td>
+                    </tr>
                 </tbody>
             </table>
 
             <!-- Total Price Section -->
             <div class="total-section">
                 <div class="total-label">Итоговая стоимость</div>
-                <div class="total-amount">{{totalPrice}} {{currency}}</div>
+                <div class="total-amount">2 850 000 ₽</div>
             </div>
         </div>
 
@@ -250,7 +292,7 @@
         <div class="footer">
             <p>Стоимость действительна в течение 30 дней</p>
             <p>Для уточнения деталей обращайтесь по указанным контактам</p>
-            <p>Сгенерировано: {{reportInfo.date}}</p>
+            <p>Сгенерировано: 18.07.2025</p>
         </div>
     </div>
 </body>
