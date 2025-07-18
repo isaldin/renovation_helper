@@ -19,6 +19,7 @@ export const subStepCheckboxSchema = subStepCommonSchema.extend({
   multiple: z.boolean().optional(),
   defaultValue: z.union([z.string(), z.array(z.string())]).optional(),
 });
+export type SubStepCheckbox = z.infer<typeof subStepCheckboxSchema>;
 
 export const subStepSelectSchema = subStepCommonSchema.extend({
   type: z.literal('select'),
@@ -26,6 +27,11 @@ export const subStepSelectSchema = subStepCommonSchema.extend({
   multiple: z.boolean().optional(),
   defaultValue: z.union([z.string(), z.array(z.string())]).optional(),
 });
+export type SubStepSelect = z.infer<typeof subStepSelectSchema>;
+
+export const isSubStepWithOptionItems = (input: SubStep): input is SubStepSelect | SubStepCheckbox => {
+  return 'optionItems' in input && Array.isArray(input.optionItems);
+};
 
 export const subStepBooleanSchema = subStepCommonSchema.extend({
   type: z.literal('boolean'),

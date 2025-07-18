@@ -16,6 +16,10 @@ export interface PdfJobData {
     options: Array<{
       question: string;
       answer: string;
+      subStep?: {
+        question: string;
+        answer: string;
+      } | null;
     }>;
     totalPrice: string;
     currency: string;

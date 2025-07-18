@@ -5,7 +5,7 @@ import { CalculatorService } from '@common/services/calculator/calculator.servic
 import { CalculatorResultsService } from '@common/services/calculatorResults/calculatorResults.service';
 import { CompanyService } from '@common/services';
 import { CalculatorNotFoundError } from '@common/errors';
-import { Calculator, Company, CalculatorResults, AnswerType } from '@common/types';
+import { Calculator, Company, CalculatorResults, AnswerType, SubStep, isSubStepWithOptionItems } from '@common/types';
 import { PdfQueueService } from '../../services/pdf-queue.service';
 import { logger } from '../../utils/logger';
 import { metrics, timed } from '../../utils/metrics';
@@ -26,6 +26,10 @@ interface ReportData {
   options: Array<{
     question: string;
     answer: string;
+    subStep: {
+      question: string;
+      answer: string;
+    } | null;
   }>;
   totalPrice: string;
   currency: string;
@@ -183,7 +187,7 @@ export class ReportController {
     const timer = metrics.timer('report_data_build');
 
     try {
-      // Transform calculator steps and results into options
+      // Transform calculator steps&substeps and results into options
       const options =
         getOrderedSteps(calculator.steps).map((step) => {
           const answer = results.results[step.id];
@@ -191,9 +195,37 @@ export class ReportController {
             ? calculator.optionList.find((list) => list.id === (step as StepWithOptionsFrom).optionsFrom)?.options || []
             : [];
 
+          const subStep: SubStep | null = ((_step: Step, _answer: AnswerType | null) => {
+            return (
+              calculator.subSteps.find((subStep) => {
+                if (subStep.sourceStepId !== _step.id) {
+                  return false;
+                }
+
+                if (subStep.choiceFromSource instanceof Array) {
+                  return subStep.choiceFromSource.includes(_answer as string);
+                }
+
+                return subStep.choiceFromSource === _answer;
+              }) || null
+            );
+          })(step, answer);
+
+          const subStepOptions = subStep
+            ? {
+                question: subStep.title || 'No sub-question',
+                answer: this.formatAnswer(
+                  subStep.type,
+                  results.results[subStep.id],
+                  isSubStepWithOptionItems(subStep) ? subStep.optionItems : []
+                ),
+              }
+            : null;
+
           return {
             question: step.title || 'No question',
             answer: this.formatAnswer(step.type, answer, options),
+            subStep: subStepOptions,
           };
         }) || [];
 

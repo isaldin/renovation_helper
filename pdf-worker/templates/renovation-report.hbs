@@ -132,6 +132,13 @@
             width: 60%;
         }
 
+        .question.substep {
+            padding-left: 30px;
+            color: #888;
+            font-size: 13px;
+            font-style: italic;
+        }
+
         .answer {
             color: #1a1a1a;
             font-size: 14px;
@@ -235,6 +242,14 @@
                         <td class="question">{{this.question}}</td>
                         <td class="answer">{{this.answer}}</td>
                     </tr>
+                    {{#if this.subStep}}
+                    {{#if this.subStep.question}}
+                    <tr>
+                        <td class="question substep">{{this.subStep.question}}</td>
+                        <td class="answer">{{this.subStep.answer}}</td>
+                    </tr>
+                    {{/if}}
+                    {{/if}}
                     {{/each}}
                 </tbody>
             </table>
