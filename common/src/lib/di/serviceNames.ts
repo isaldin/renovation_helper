@@ -10,6 +10,7 @@ export enum ServiceNames {
   CalculatorSubStepsRepository = 'CalculatorSubStepsRepository',
   CalculatorResultsRepository = 'CalculatorResultsRepository',
   CompanyRepository = 'CompanyRepository',
+  DomainCalculatorMapRepository = 'DomainCalculatorMapRepository',
 
   CalculatorService = 'CalculatorService',
   CalculatorSettingsService = 'CalculatorSettingsService',
@@ -18,6 +19,7 @@ export enum ServiceNames {
   CalculatorSubStepsService = 'CalculatorSubStepsService',
   CalculatorResultsService = 'CalculatorResultsService',
   CompanyService = 'CompanyService',
+  DomainCalculatorMapService = 'DomainCalculatorMapService',
 
   // Web app service names
   WAUserService = 'WAUserService',
@@ -43,10 +45,6 @@ export enum ServiceNames {
   BAMeController = 'BAMeController',
   BACalculationResultsController = 'BACalculationResultsController',
   BAReportController = 'BAReportController',
-  // repositories
-  BADomainCalculatorMapRepository = 'BADomainCalculatorMapRepository',
-  // services
-  BADomainCalculatorMapService = 'BADomainCalculatorMapService',
 
   // PDF Worker service names
   PWPdfService = 'PWPdfService',
@@ -54,4 +52,10 @@ export enum ServiceNames {
   PWPdfWorkerService = 'PWPdfWorkerService',
   PWGracefulShutdownService = 'PWGracefulShutdownService',
   PWLoggerService = 'PWLoggerService',
+
+  // Bot service names
+  BotService = 'BotService',
+  BotReportService = 'BotReportService',
+  BotUserService = 'BotUserService',
+  BotConfigService = 'BotConfigService',
 }

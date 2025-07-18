@@ -4,8 +4,8 @@ import { FastifyReply } from 'fastify';
 import { inject, injectable } from 'tsyringe';
 import { ServiceNames } from '@common';
 import { JwtService } from '../../services/jwt.service.ts';
-import { DomainCalculatorMapService } from '../../firebase/services/domainCalculatorMap.service.ts';
 import { ConfigService } from '../../services/config.service.ts';
+import { DomainCalculatorMapService } from '@common';
 
 const COMPANY_ID_NOT_FOUND_ERROR_STRING = 'Company ID not found for the domain.';
 
@@ -14,7 +14,7 @@ export class DevAuthController implements BaseAuthController {
   constructor(
     @inject(ServiceNames.BAConfigService) private readonly configService: ConfigService,
     @inject(ServiceNames.BAJwtService) private readonly jwtService: JwtService,
-    @inject(ServiceNames.BADomainCalculatorMapService)
+    @inject(ServiceNames.DomainCalculatorMapService)
     private readonly domainCalculatorMapService: DomainCalculatorMapService
   ) {}
 

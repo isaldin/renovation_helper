@@ -1,8 +1,8 @@
 import { inject, injectable } from 'tsyringe';
-import { FirestoreRepository } from '@common/repository/firebase/firestoreRepository';
-import { DomainCalculatorMap } from '../entities/domainCalculatorMap';
-import { ServiceNames } from '@common';
-import { FirebaseStore } from '@common/repository/firebase/firebaseStore';
+import { FirestoreRepository } from '../firebase/firestoreRepository';
+import { DomainCalculatorMap } from '../../types/domainCalculatorMap';
+import { FirebaseStore } from '../firebase/firebaseStore';
+import { ServiceNames } from '../../di';
 
 @injectable()
 export class DomainCalculatorMapRepository extends FirestoreRepository<DomainCalculatorMap> {

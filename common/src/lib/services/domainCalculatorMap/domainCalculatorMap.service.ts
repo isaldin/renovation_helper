@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
-import { ServiceNames } from '@common';
-import { DomainCalculatorMapRepository } from '../repositories/domainCalculatorMap.repository';
+import { ServiceNames } from '../../di';
+import { DomainCalculatorMapRepository } from '../../repository/domainCalculatorMap/domainCalculatorMap.repository';
 
 @injectable()
 export class DomainCalculatorMapService {
   constructor(
-    @inject(ServiceNames.BADomainCalculatorMapRepository)
+    @inject(ServiceNames.DomainCalculatorMapRepository)
     private readonly domainCalculatorMapRepository: DomainCalculatorMapRepository
   ) {}
 

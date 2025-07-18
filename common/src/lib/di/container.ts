@@ -11,7 +11,9 @@ import { CalculatorOptionsService } from '../services/calculator/calculatorOptio
 import { CalculatorSubStepsRepository } from '../repository/calculator/calculatorSubSteps.repository';
 import { CalculatorSubStepsService } from '../services/calculator/calculatorSubSteps.service';
 import { CalculatorResultsRepository } from '../repository/calculatorResults/calculatorResults.repository';
-import { CalculatorResultsService } from '../services/calculatorResults/calculatorResults.service';
+import { CalculatorResultsService } from '../services';
+import { DomainCalculatorMapRepository } from '../repository/domainCalculatorMap/domainCalculatorMap.repository';
+import { DomainCalculatorMapService } from '../services/domainCalculatorMap/domainCalculatorMap.service';
 
 type RegisterServicesFn = (container: DependencyContainer) => void;
 
@@ -64,5 +66,13 @@ export const registerContainer = (registerServicesFn: RegisterServicesFn) => {
   container.registerSingleton<CalculatorResultsService>(
     ServiceNames.CalculatorResultsService,
     CalculatorResultsService
+  );
+  container.registerSingleton<DomainCalculatorMapRepository>(
+    ServiceNames.DomainCalculatorMapRepository,
+    DomainCalculatorMapRepository
+  );
+  container.registerSingleton<DomainCalculatorMapService>(
+    ServiceNames.DomainCalculatorMapService,
+    DomainCalculatorMapService
   );
 };

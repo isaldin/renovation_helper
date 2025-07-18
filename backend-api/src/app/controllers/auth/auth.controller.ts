@@ -5,9 +5,9 @@ import { parse as parseFn } from '@telegram-apps/init-data-node';
 import { ServiceNames } from '@common';
 import { ConfigService } from '../../services/config.service.ts';
 import { JwtService } from '../../services/jwt.service.ts';
-import { DomainCalculatorMapService } from '../../firebase/services/domainCalculatorMap.service.ts';
 import { TelegramAuthRequest } from './auth.controller.types.ts';
 import { BaseAuthController } from './auth.controller.base.ts';
+import { DomainCalculatorMapService } from '@common';
 
 const INVALID_AUTH_ERROR_STRING = 'Invalid auth data. Please try again.';
 const COMPANY_ID_NOT_FOUND_ERROR_STRING = 'Company ID not found for the domain.';
@@ -17,7 +17,7 @@ export class AuthController implements BaseAuthController {
   constructor(
     @inject(ServiceNames.BAConfigService) private readonly configService: ConfigService,
     @inject(ServiceNames.BAJwtService) private readonly jwtService: JwtService,
-    @inject(ServiceNames.BADomainCalculatorMapService)
+    @inject(ServiceNames.DomainCalculatorMapService)
     private readonly domainCalculatorMapService: DomainCalculatorMapService
   ) {}
 
