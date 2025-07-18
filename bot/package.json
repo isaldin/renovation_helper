@@ -11,6 +11,7 @@
         ],
         "defaultConfiguration": "production",
         "options": {
+          "esbuildConfig": "bot/esbuild.config.cjs",
           "platform": "node",
           "outputPath": "bot/dist",
           "format": [
@@ -21,24 +22,11 @@
           "tsConfig": "bot/tsconfig.app.json",
           "assets": [
             "bot/src/assets"
-          ],
-          "esbuildOptions": {
-            "sourcemap": true,
-            "outExtension": {
-              ".js": ".js"
-            }
-          }
+          ]
         },
         "configurations": {
           "development": {},
-          "production": {
-            "esbuildOptions": {
-              "sourcemap": false,
-              "outExtension": {
-                ".js": ".js"
-              }
-            }
-          }
+          "production": {}
         }
       },
       "serve": {

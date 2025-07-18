@@ -51,3 +51,5 @@ vitest.config.*.timestamp*
 **/.env.telegram
 
 .firebase/
+
+serviceAccountKey.json

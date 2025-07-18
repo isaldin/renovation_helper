@@ -14,7 +14,7 @@ module.exports = {
         console.log('Copying serviceAccountKey.json to dist/backend-api');
         build.onEnd(() => {
           copyFileSync(
-            resolve(__dirname, 'serviceAccountKey.json'),
+            resolve(__dirname, '../serviceAccountKey.json'),
             resolve(__dirname, './dist/backend-api/serviceAccountKey.json')
           );
           console.log('Copied config.json');
